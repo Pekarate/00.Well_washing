@@ -1,0 +1,13 @@
+/*
+ * flash.h
+ *
+ *  Created on: Mar 15, 2023
+ *      Author: ADMIN
+ */
+
+#ifndef INC_FLASH_H_
+#define INC_FLASH_H_
+
+void write_to_flash(uint32_t address, uint8_t data[], uint32_t size);
+
+#endif /* INC_FLASH_H_ */

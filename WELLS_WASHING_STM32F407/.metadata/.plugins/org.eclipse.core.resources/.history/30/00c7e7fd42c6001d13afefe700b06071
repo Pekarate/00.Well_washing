@@ -1,0 +1,17 @@
+/*
+ * motor.c
+ *
+ *  Created on: Mar 19, 2023
+ *      Author: ADMIN
+ */
+
+
+#include "main.h"
+#include "stdint.h"
+
+_motor_typedef x_motor,z_motor;
+
+void x_mt_set_dir(_motor_dir dir){
+
+}
+void x_mt_move_to_pos(uint32_t dir);

@@ -1,0 +1,21 @@
+02:32:53 **** Incremental Build of configuration Debug for project wells_washing ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/dw_display.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/dw_display.d" -MT"Core/Src/dw_display.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/dw_display.o"
+arm-none-eabi-gcc -o "wells_washing.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\01.Freelancer\00.Well_washing\WELLS_WASHING_STM32F407\wells_washing\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="wells_washing.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: wells_washing.elf
+ 
+arm-none-eabi-size   wells_washing.elf 
+arm-none-eabi-objdump -h -S  wells_washing.elf  > "wells_washing.list"
+   text	   data	    bss	    dec	    hex	filename
+  58048	    360	  37888	  96296	  17828	wells_washing.elf
+Finished building: default.size.stdout
+ 
+Finished building: wells_washing.list
+ 
+02:33:00 **** Incremental Build of configuration Debug for project wells_washing ****
+make -j12 all 
+arm-none-eabi-size   wells_washing.elf 
+   text	   data	    bss	    dec	    hex	filename
+  58048	    360	  37888	  96296	  17828	wells_washing.elf
+Finished building: default.size.stdout
+ 

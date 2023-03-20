@@ -1,0 +1,31 @@
+/*
+ * dw_display.c
+ *
+ *  Created on: Mar 18, 2023
+ *      Author: ADMIN
+ */
+
+
+#include "main.h"
+#include "uart.h"
+#include "string.h"
+#include "data.h"
+
+
+
+int dw_update_step_numbers(void)
+{
+	uint8_t tx[100] = {0x5a,0xa5,23,0x82,0x20,0x00};
+	for(int i=0;i<10;i++)
+	{
+		tx[6+i*2] = 0;
+		tx[6+i*2+1] = system_data.pg_stepnumber[i];
+	}
+	uart_transmit_block(tx, 26, 1000);
+	return 1;
+}
+
+void process_data_rx_uart()
+{
+
+}

@@ -1,0 +1,109 @@
+/*
+ * motor.c
+ *
+ *  Created on: Mar 19, 2023
+ *      Author: ADMIN
+ */
+
+
+#include "main.h"
+#include "stdint.h"
+#include "motor.h"
+#include "stdlib.h"
+
+extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
+_motor_typedef x_motor,z_motor;
+
+void x_mt_set_dir(){
+	if(x_motor.current_pos < x_motor.next_pos){
+		x_motor.current_dir = DIR_FORWARD;
+		HAL_GPIO_WritePin(X_MOTOR_DIR_GPIO_Port, X_MOTOR_DIR_Pin, DIR_FORWARD);
+		htim2.Instance->CR1 &= ~(1<<4);
+	}
+	else
+	{
+		x_motor.current_dir = DIR_BACKWARD;
+		HAL_GPIO_WritePin(X_MOTOR_DIR_GPIO_Port, X_MOTOR_DIR_Pin, DIR_BACKWARD);
+		htim2.Instance->CR1 |= (1<<4);
+	}
+
+}
+
+
+void x_mt_start(){
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+}
+
+void x_mt_stop()
+{
+	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+}
+
+void x_mt_move_to_pos(uint32_t pos){
+	x_motor.next_pos = pos;
+	x_motor.current_pos = htim2.Instance->CNT;
+	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+	x_mt_set_dir(x_motor.current_pos,x_motor.next_pos);
+}
+
+//void x_mt_move_to_pos(uint32_t pos){
+//	x_motor.next_pos = pos;
+//	x_motor.current_pos = htim2.Instance->CNT;
+//	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+//	x_mt_set_dir(x_motor.current_pos,x_motor.next_pos);
+//}
+
+void x_step_mt_int(void){
+	x_motor.current_pos= x_motor.next_pos = htim2.Instance->CNT = 0;
+	x_motor.old_pos = x_motor.ud_time =0;
+	HAL_TIM_Base_Start(&htim2);
+}
+
+void x_step_mt_move_foward(_motor_typedef step,uin16_t numstep){
+	x_motor.next_pos +=numstep;
+}
+
+void x_step_mt_move_backward(uin16_t numstep){
+	x_motor.next_pos -=numstep;
+	if(x_motor.next_pos > 2000000000)
+	{
+		x_motor.next_pos =0;
+	}
+}
+
+void x_step_motor_process(void){
+	x_motor.current_pos = htim2.Instance->CNT;
+	switch (x_motor.state) {
+		case MT_STATE_IDLE:
+			if(abs(x_motor.current_pos- x_motor.next_pos) > STEP_LOSS){
+				x_motor.state = MT_STATE_START;
+			}
+			break;
+		case MT_STATE_START:
+			x_mt_set_dir();
+			x_mt_start();
+			x_motor.state = MT_STATE_RUNING;
+			break;
+		case MT_STATE_RUNING:
+			if(x_motor.current_dir == DIR_FORWARD){
+				if(x_motor.current_pos >= x_motor.next_pos){
+					x_motor.state = MT_STATE_STTOP;
+				}
+			} else {
+				if(x_motor.current_pos <= x_motor.next_pos){
+					x_motor.state = MT_STATE_STTOP;
+				}
+			}
+//			if(abs(x_motor.current_pos- x_motor.next_pos) < STEP_LOSS){
+//							x_motor.state = MT_STATE_STTOP;
+//			}
+			break;
+		case MT_STATE_STTOP:
+			x_mt_stop();
+			x_motor.state = MT_STATE_IDLE;
+			break;
+		default:
+			break;
+	}
+}

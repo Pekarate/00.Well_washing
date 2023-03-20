@@ -1,0 +1,4 @@
+ToolChainManager/order/0.id=gcc--C\:/MinGW/bin/gcc.exe
+ToolChainManager/order/0.type=org.eclipse.cdt.build.gcc
+ToolChainManager/order/n=1
+eclipse.preferences.version=1

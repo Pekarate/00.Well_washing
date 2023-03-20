@@ -1,0 +1,25 @@
+/*
+ * dw_display.h
+ *
+ *  Created on: Mar 18, 2023
+ *      Author: ADMIN
+ */
+
+#ifndef INC_DW_DISPLAY_H_
+#define INC_DW_DISPLAY_H_
+
+#include "main.h"
+
+#define PAGE_SETUP_STEP_NONE 2
+#define PAGE_SETUP_STEP_SHAKE 2
+#define PAGE_SETUP_STEP_WASHING 3
+#define PAGE_SETUP_STEP_DRYING 4
+
+#define VP_STEP_NUMBERS 0x2000
+
+#define BT_SETUP_CODE 0x3000
+#define BT_SWICH_SETUP_PAGE 0x3001
+
+int dw_update_step_numbers(void);
+
+#endif /* INC_DW_DISPLAY_H_ */

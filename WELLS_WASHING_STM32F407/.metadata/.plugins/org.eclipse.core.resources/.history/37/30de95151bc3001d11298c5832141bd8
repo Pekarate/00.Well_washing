@@ -1,0 +1,80 @@
+/*
+ * flash.c
+ *
+ *  Created on: Mar 15, 2023
+ *      Author: ADMIN
+ */
+
+#include  "flash.h"
+
+#include <stm32f4xx_hal.h>
+#include <stm32f4xx_hal_flash.h>
+
+#define FLASH_PAGE_SIZE         ((uint32_t)0x00000800)   // Flash page size in bytes
+#define DATA_SIZE               ((uint32_t)1024)         // Data size in bytes
+#define DATA_ADDRESS            ((uint32_t)0x0800C000)   // Address in flash to write data to
+
+void write_to_flash(uint8_t data[], uint32_t size)
+{
+    FLASH_EraseInitTypeDef EraseInitStruct;
+    uint32_t PageError = 0;
+    HAL_FLASH_Unlock();
+
+    EraseInitStruct.TypeErase = TYPEERASE_SECTORS;
+    EraseInitStruct.Sector = GetSector(DATA_ADDRESS);
+    EraseInitStruct.NbSectors = (size + FLASH_PAGE_SIZE - 1) / FLASH_PAGE_SIZE;
+
+    uint32_t SectorError = 0;
+    HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError);
+
+    for (uint32_t i = 0; i < size; i += 4) {
+        uint32_t word = data[i] |
+                       (data[i+1] << 8) |
+                       (data[i+2] << 16) |
+                       (data[i+3] << 24);
+        HAL_FLASH_Program(TYPEPROGRAM_WORD, DATA_ADDRESS + i, word);
+    }
+
+    HAL_FLASH_Lock();
+}
+
+uint32_t GetSector(uint32_t address)
+{
+    if (address < ADDR_FLASH_SECTOR_1) return FLASH_SECTOR_0;
+    if (address < ADDR_FLASH_SECTOR_2) return FLASH_SECTOR_1;
+    if (address < ADDR_FLASH_SECTOR_3) return FLASH_SECTOR_2;
+    if (address < ADDR_FLASH_SECTOR_4) return FLASH_SECTOR_3;
+    if (address < ADDR_FLASH_SECTOR_5) return FLASH_SECTOR_4;
+    if (address < ADDR_FLASH_SECTOR_6) return FLASH_SECTOR_5;
+    if (address < ADDR_FLASH_SECTOR_7) return FLASH_SECTOR_6;
+    if (address < ADDR_FLASH_SECTOR_8) return FLASH_SECTOR_7;
+    if (address < ADDR_FLASH_SECTOR_9) return FLASH_SECTOR_8;
+    if (address < ADDR_FLASH_SECTOR_10) return FLASH_SECTOR_9;
+    if (address < ADDR_FLASH_SECTOR_11) return FLASH_SECTOR_10;
+    return FLASH_SECTOR_11;
+}
+
+// Function to read data from Flash memory
+void read_flash(uint32_t address, uint8_t* buffer, uint32_t length)
+{
+    uint32_t i;
+
+    // Make sure the start address is aligned to 32-bit boundary
+    address &= ~(0x03);
+
+    // Loop through each word of Flash memory and copy it to the buffer
+    for (i = 0; i < length; i += 4)
+    {
+        // Read a word from Flash memory
+        uint32_t word = *(uint32_t*)address;
+
+        // Copy the word to the buffer
+        buffer[i]     = (uint8_t)(word >>  0);
+        buffer[i + 1] = (uint8_t)(word >>  8);
+        buffer[i + 2] = (uint8_t)(word >> 16);
+        buffer[i + 3] = (uint8_t)(word >> 24);
+
+        // Increment the Flash memory address
+        address += 4;
+    }
+}

@@ -1,0 +1,22 @@
+/*
+ * dw_display.c
+ *
+ *  Created on: Mar 18, 2023
+ *      Author: ADMIN
+ */
+
+
+#include "main.h"
+#include "uart.h"
+
+int dw_update_step_numbers()
+{
+	uint8_t tx[100] = {0x5a,0xa5,23,0x82,0x20,0x00};
+	tx[0] = 0x5a;
+	tx[1] = 0xa5;
+	tx[2] = 23;
+	tx[3] = 0x82;
+	tx[4] = 0x20;
+
+	return 1;
+}

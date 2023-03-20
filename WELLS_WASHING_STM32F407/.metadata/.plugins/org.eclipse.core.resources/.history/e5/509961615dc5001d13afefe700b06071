@@ -1,0 +1,115 @@
+/*
+ * data.c
+ *
+ *  Created on: Mar 15, 2023
+ *      Author: ADMIN
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include "stdint.h"
+#include "string.h"
+
+#include "data.h"
+_system_data system_data;
+
+const _flash_data flash_defaul = {
+									.Well_position ={100,1000,2000,3000,4000,5000,6000,7000,8000,9000},
+									.Program_para ={
+														{ //program 1
+																{.type = 1,.wells = 1}, //step1
+																{.type = 1,.wells = 2}, //step2
+																{.type = 1,.wells = 3}, //step3
+																{.type = 1,.wells = 4}, //step4
+																{.type = 1,.wells = 5}, //step5
+																{.type = 1,.wells = 6}, //step6
+																{.type = 1,.wells = 7}  //step7
+														},
+														{ //program 2
+																{.type = 1,.wells = 1}, //step1
+																{.type = 1,.wells = 1}, //step2
+																{.type = 1,.wells = 1}, //step3
+																{.type = 1,.wells = 1}, //step4
+																{.type = 1,.wells = 1}, //step5
+																{.type = 1,.wells = 1}, //step6
+																{.type = 1,.wells = 1}  //step7
+														},
+														{ //program 3
+																{.type = 1,.wells = 1}, //step1
+																{.type = 1,.wells = 1}, //step2
+																{.type = 1,.wells = 1}, //step3
+																{.type = 1,.wells = 1}, //step4
+																{.type = 1,.wells = 1}, //step5
+																{.type = 1,.wells = 1}, //step6
+																{.type = 1,.wells = 1}  //step7
+														},
+														{ //program 4
+																{.type = 1,.wells = 1}, //step1
+																{.type = 1,.wells = 1}, //step2
+																{.type = 1,.wells = 1}, //step3
+																{.type = 1,.wells = 1}, //step4
+																{.type = 1,.wells = 1}, //step5
+																{.type = 1,.wells = 1}, //step6
+																{.type = 1,.wells = 1}  //step7
+														},
+														{ //program 5
+																{.type = 1,.wells = 1}, //step1
+																{.type = 1,.wells = 1}, //step2
+																{.type = 1,.wells = 1}, //step3
+																{.type = 1,.wells = 1}, //step4
+																{.type = 1,.wells = 1}, //step5
+																{.type = 1,.wells = 1}, //step6
+																{.type = 1,.wells = 1}  //step7
+														}
+													},
+									.factory_code = FACTORY_CODE
+									};
+
+
+_def_step step;
+
+
+int is_data_init()
+{
+	if(system_data.flash_data.factory_code != FACTORY_CODE)
+	{
+		return 0;
+	}
+	return 1;
+}
+void calculator_pg_stepnumber()
+{
+	for(int i=0;i<10;i++)
+	{
+		system_data.pg_stepnumber[i] =0;
+		for(int j=0;j<25;j++)
+		{
+			if(system_data.flash_data.Program_para[i][j].type == STEP_TYPE_NONE )
+			{
+				break;
+			}
+			system_data.pg_stepnumber[i]++;
+		}
+	}
+}
+void calculator_pg_total_time()
+{
+	for(int i=0;i<10;i++)
+	{
+//		@TODO
+//		system_data.pg_stepnumber[i] =0;
+//		for(int j=0;j<25;i++)
+//		{
+//			if(system_data.flash_data.Program_para[i][j].type == STEP_TYPE_NONE )
+//			{
+//				break;
+//			}
+//			system_data.pg_stepnumber[i]++;
+//		}
+	}
+}
+
+void Modify_step(uint8_t pg,uint8_t stepindex ,_def_step step)
+{
+	memcpy(&system_data.flash_data.Program_para[pg][stepindex],&step,sizeof(_def_step));
+}
+

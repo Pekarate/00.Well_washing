@@ -1,0 +1,46 @@
+/*
+ * motor.h
+ *
+ *  Created on: Mar 19, 2023
+ *      Author: ADMIN
+ */
+
+#ifndef INC_MOTOR_H_
+#define INC_MOTOR_H_
+
+#include "main.h"
+#include "stdint.h"
+#include "motor.h"
+#define STEP_LOSS 2
+
+typedef enum
+{
+	DIR_FORWARD = 0,
+	DIR_BACKWARD
+}_motor_dir;
+
+typedef enum
+{
+	MT_STATE_IDLE = 0,
+	MT_STATE_START,
+	MT_STATE_RUNING,
+	MT_STATE_STTOP
+}_motor_state;
+
+typedef struct{
+	uint32_t old_pos; // for check is position changed
+	uint32_t current_pos;
+	uint32_t next_pos;
+	_motor_dir current_dir;
+	_motor_state state;
+	int (*is_mt_home_pos)(void);
+	void (*mt_set_dir)(_motor_dir);
+	void (*mt_move_to_pos)(uint32_t);
+	void (*mt_start)();
+	void (*mt_stop)();
+}_motor_typedef;
+
+void x_step_mt_int(void);
+void x_step_motor_process(void);
+int dw_update_steper_positon(_motor_typedef *st_motor);
+#endif /* INC_MOTOR_H_ */

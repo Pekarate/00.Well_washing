@@ -1,0 +1,12 @@
+/*
+ * motor.c
+ *
+ *  Created on: Mar 19, 2023
+ *      Author: ADMIN
+ */
+
+
+#include "main.h"
+#include "stdint.h"
+
+_motor_typedef x_motor,z_motor;

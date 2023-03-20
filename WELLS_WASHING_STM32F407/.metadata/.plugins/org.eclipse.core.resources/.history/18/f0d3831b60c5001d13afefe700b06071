@@ -1,0 +1,9 @@
+/*
+ * uart.c
+ *
+ *  Created on: Mar 18, 2023
+ *      Author: ADMIN
+ */
+
+#include  "uart.h"
+extern UART_HandleTypeDef huart2;

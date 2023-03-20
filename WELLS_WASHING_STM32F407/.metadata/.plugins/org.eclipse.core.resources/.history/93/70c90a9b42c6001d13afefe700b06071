@@ -1,0 +1,25 @@
+/*
+ * motor.h
+ *
+ *  Created on: Mar 19, 2023
+ *      Author: ADMIN
+ */
+
+#ifndef INC_MOTOR_H_
+#define INC_MOTOR_H_
+
+#include "main.h"
+#include "stdint.h"
+
+typedef enum
+{
+	DIR_FORWARD = 0
+};
+typedef struct{
+	uint32_t current_pos;
+	uint32_t next_pos;
+	uint8_t current_dir;
+	void (*mt_set_dir())
+};
+
+#endif /* INC_MOTOR_H_ */

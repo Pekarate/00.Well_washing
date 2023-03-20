@@ -1,0 +1,16 @@
+/*
+ * dw_display.h
+ *
+ *  Created on: Mar 18, 2023
+ *      Author: ADMIN
+ */
+
+#ifndef INC_DW_DISPLAY_H_
+#define INC_DW_DISPLAY_H_
+
+#include "main.h"
+
+#define VP_STEP_NUMBERS 0x2000
+
+
+#endif /* INC_DW_DISPLAY_H_ */

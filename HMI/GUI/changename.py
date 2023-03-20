@@ -2,7 +2,7 @@
 # import required module
 import os
 # assign directory
-directory = 'D:\\000.Freelancer\\00.Well_washing\\HMI\\GUI'
+directory = 'D:\\01.Freelancer\\00.Well_washing\\HMI\\GUI'
  
 # iterate over files in
 # that directory
