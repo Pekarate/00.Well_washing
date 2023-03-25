@@ -1,0 +1,16 @@
+main.c:84:5:_write	1
+main.c:92:6:HAL_TIM_PWM_PulseFinishedCallback	2
+main.c:99:6:HAL_TIM_TriggerHalfCpltCallback	2
+main.c:112:5:main	9
+main.c:234:6:SystemClock_Config	3
+main.c:280:13:MX_I2C1_Init	2
+main.c:314:13:MX_SPI1_Init	2
+main.c:352:13:MX_TIM1_Init	7
+main.c:427:13:MX_TIM2_Init	4
+main.c:473:13:MX_TIM3_Init	6
+main.c:532:13:MX_TIM5_Init	4
+main.c:578:13:MX_TIM8_Init	3
+main.c:618:13:MX_USART2_UART_Init	2
+main.c:649:13:MX_DMA_Init	1
+main.c:674:13:MX_GPIO_Init	1
+main.c:804:6:Error_Handler	1
