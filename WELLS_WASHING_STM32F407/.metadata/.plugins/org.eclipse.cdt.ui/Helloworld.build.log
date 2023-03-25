@@ -1,7 +1,0 @@
-22:15:42 **** Rebuild of configuration Debug for project Helloworld ****
-Info: Internal Builder is used for build
-gcc -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\Helloworld.o" "..\\src\\Helloworld.c" 
-gcc -o Helloworld.exe "src\\Helloworld.o" 
-
-22:15:44 Build Finished. 0 errors, 0 warnings. (took 1s.350ms)
-

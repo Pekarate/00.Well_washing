@@ -1,3 +1,0 @@
-D:/01.Freelancer/00.Well_washing/LIBRARY/00.Process_data/build/CMakeFiles/my_program.dir
-D:/01.Freelancer/00.Well_washing/LIBRARY/00.Process_data/build/CMakeFiles/edit_cache.dir
-D:/01.Freelancer/00.Well_washing/LIBRARY/00.Process_data/build/CMakeFiles/rebuild_cache.dir
