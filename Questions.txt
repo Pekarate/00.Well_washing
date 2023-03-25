@@ -1,0 +1,4 @@
+1: how to add or modify a program? By source code or by button and LCD???
+2: the number sec in step washing and drying is fixed or based on the program?
+3: how to know when the washing solution is full or empty to stop the pump?
+4: The number step each well is fixed or can modify?how to know we achieve the wells n?
