@@ -37,6 +37,7 @@ typedef enum
 	MT_STATE_STTOP
 }_motor_state;
 
+
 typedef struct{
 	uint32_t ud_time; // for display position 2 time diffrent 2 ms
 	uint32_t old_pos; // for check is position changed

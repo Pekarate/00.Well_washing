@@ -1,4 +1,5 @@
-Core/Src/dw_display.o: ../Core/Src/dw_display.c ../Core/Inc/main.h \
+Core/Src/dw_display.o: ../Core/Src/dw_display.c \
+ ../Core/Inc/program_process.h ../Core/Inc/data.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -33,8 +34,11 @@ Core/Src/dw_display.o: ../Core/Src/dw_display.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h \
- ../Core/Inc/uart.h ../Core/Inc/main.h ../Core/Inc/data.h \
- ../Core/Inc/dw_display.h ../Core/Inc/motor.h ../Core/Inc/motor.h
+ ../Core/Inc/define.h ../Core/Inc/main.h ../Core/Inc/uart.h \
+ ../Core/Inc/data.h ../Core/Inc/dw_display.h ../Core/Inc/motor.h \
+ ../Core/Inc/motor.h
+../Core/Inc/program_process.h:
+../Core/Inc/data.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -70,8 +74,9 @@ Core/Src/dw_display.o: ../Core/Src/dw_display.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h:
-../Core/Inc/uart.h:
+../Core/Inc/define.h:
 ../Core/Inc/main.h:
+../Core/Inc/uart.h:
 ../Core/Inc/data.h:
 ../Core/Inc/dw_display.h:
 ../Core/Inc/motor.h:

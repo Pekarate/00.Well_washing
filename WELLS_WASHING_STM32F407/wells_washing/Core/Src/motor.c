@@ -28,7 +28,7 @@ void mt_move_to_home(_motor_typedef *motor){
 }
 
 void mt_set_target_position(_motor_typedef *motor,uint32_t new_position){
-	motor->next_pos == new_position;
+	motor->next_pos = new_position;
 }
 
 void x_mt_set_dir(){
@@ -103,7 +103,6 @@ void x_step_motor_home_position()
 		x_motor.is_home = 1;
 		x_mt_stop();
 		x_motor.current_dir = htim2.Instance->CNT =0;
-		x_motor.next_pos = 0;
 	}
 	if(htim2.Instance->CNT)
 	{
@@ -237,7 +236,6 @@ void z_step_motor_home_position()
 		z_motor.is_home = 1;
 		z_mt_stop();
 		z_motor.current_pos = htim5.Instance->CNT =0;
-		z_motor.next_pos = 0;
 	}
 	if(htim5.Instance->CNT)
 	{
@@ -245,10 +243,18 @@ void z_step_motor_home_position()
 	}
 }
 
+
+
 void z_step_motor_process(void){
 	z_motor.current_pos = htim5.Instance->CNT;
 	z_step_motor_home_position();
 	home_process(&z_motor);
+//	static uint32_t znext =0;
+//	if(znext!= z_motor.next_pos)
+//	{
+//		znext= z_motor.next_pos;
+//		printf("z next: %lu\n",z_motor.next_pos);
+//	}
 	switch (z_motor.state) {
 		case MT_STATE_IDLE:
 			if(abs(z_motor.current_pos- z_motor.next_pos) > STEP_LOSS){
@@ -270,9 +276,6 @@ void z_step_motor_process(void){
 					z_motor.state = MT_STATE_STTOP;
 				}
 			}
-//			if(abs(z_motor.current_pos- z_motor.next_pos) < STEP_LOSS){
-//							z_motor.state = MT_STATE_STTOP;
-//			}
 			break;
 		case MT_STATE_STTOP:
 			z_mt_stop();

@@ -12,6 +12,6 @@ dw_display.c:160:5:dw_update_setup_page	4
 dw_display.c:178:6:show_setup_page	7
 dw_display.c:201:6:dwin_update_step	2
 dw_display.c:214:6:dwin_start_program	1
-dw_display.c:228:5:dw_process_rx_buffer	24
-dw_display.c:288:5:dw_update_step_numbers	1
-dw_display.c:294:5:dw_update_steper_positon	4
+dw_display.c:230:5:dw_process_rx_buffer	24
+dw_display.c:290:5:dw_update_step_numbers	1
+dw_display.c:296:5:dw_update_steper_positon	4

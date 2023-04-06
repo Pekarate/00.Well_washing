@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <program_process.h>
 #include "main.h"
 #include "usb_device.h"
 
@@ -26,6 +27,7 @@
 #include "uart.h"
 #include "dw_display.h"
 #include "motor.h"
+#include  "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,13 +79,49 @@ static void MX_TIM2_Init(void);
 static void MX_TIM5_Init(void);
 /* USER CODE BEGIN PFP */
 
+typedef struct
+{
+	uint8_t size;
+	uint8_t data[100];
+}_debug_frame;
+#define LOG_FRAME 50
+_debug_frame debuglog[LOG_FRAME];
+uint8_t debug_cnt = 0;
+static uint8_t out_index = 0;
+static uint8_t in_index = 0;
+void debug_process()
+{
+
+	if(debug_cnt)
+	{
+		if(CDC_Transmit_FS(debuglog[out_index].data,debuglog[out_index].size)==USBD_OK)
+		{
+			out_index++;
+			if(out_index == LOG_FRAME)
+				out_index =0;
+			debug_cnt--;
+		}
+	}
+}
+
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 int _write(int file, char *ptr, int len)
 {
-	__NOP();
+
+	debuglog[in_index].size = len;
+	memcpy(debuglog[in_index].data,ptr,len);
+	debug_cnt++;
+	if(debug_cnt>LOG_FRAME)
+	{
+		debug_cnt = LOG_FRAME;
+	}
+	in_index++;
+	if(in_index == LOG_FRAME)
+		in_index =0;
 	return len;
 }
 uint8_t usercommand =0;
@@ -118,7 +156,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+   HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -171,13 +209,17 @@ int main(void)
 	  if(x_motor.is_home)
 		  break;
  }
-  uint32_t ti;
+//  uint32_t ti;
+  printf("code started \n");
+  HAL_Delay(100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  usercommand =1;
   while (1)
   {
+	  debug_process();
 //	  if(HAL_GetTick()> ti)
 //	  {
 //			char tmp[100];
@@ -185,6 +227,8 @@ int main(void)
 //			s_log_add_1_line(tmp);
 //		   ti = HAL_GetTick() +500;
 //	  }
+//	  step_shake_process();
+	  pg_process_loop();
 	  uart_process();
 	  x_step_motor_process();
 	  dw_update_steper_positon();
@@ -192,13 +236,7 @@ int main(void)
 	  dw_update_steper_positon();
 	  switch (usercommand) {
 		case 1:
-			while(times)
-			{
-				HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-				HAL_Delay(200);
-				HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-				times --;
-			}
+//			step_shake_start();
 			usercommand = 0;
 			break;
 		case 2:

@@ -6,6 +6,7 @@
  */
 
 
+#include <program_process.h>
 #include "main.h"
 #include "uart.h"
 #include "string.h"
@@ -13,7 +14,6 @@
 #include "dw_display.h"
 #include "motor.h"
 #include "stdio.h"
-
 uint8_t	current_rx_index = 0;
 uint8_t *dw_rx_buf[10] = {0};
 
@@ -214,12 +214,14 @@ void dwin_update_step(uint8_t *data){
 void dwin_start_program(uint8_t pg){
 
 //	s_log.s_size = sprintf(s_log.log,"\r\nIF I DIE");
-	Dwin_switch_page(PAGE_RUNNING);
-	s_log_clear();
+	Dwin_switch_page(PAGE_MANUAL_CONTROL);
+//	s_log_clear();
 	HAL_Delay(1);
 	char tmp[100];
 	sprintf(tmp,"START PROGRAM %d",pg);
-	s_log_add_1_line(tmp);
+	pg_start(pg-1, 0);
+
+//	s_log_add_1_line(tmp);
 //	Dwin_Write_VP_String(0x3800,s_log.log, s_log.s_size);
 }
 
@@ -290,7 +292,7 @@ int dw_update_step_numbers(void){
 	Dwin_Write_VP(VP_STEP_NUMBERS,system_data.pg_stepnumber,10);
 	return 1;
 }
-
+float xxxx;
 int dw_update_steper_positon(void){
 	static uint32_t time_tmp =0;
 	if( (HAL_GetTick() > time_tmp)&&((x_motor.old_pos != x_motor.current_pos) || (z_motor.old_pos != z_motor.current_pos)))
@@ -299,10 +301,14 @@ int dw_update_steper_positon(void){
 		x_motor.old_pos = x_motor.current_pos;
 		z_motor.old_pos = z_motor.current_pos;
 		uint16_t data[4];
-		data[0] = x_motor.current_pos/65535;
-		data[1] = x_motor.current_pos;
-		data[2] = z_motor.current_pos/65535;
-		data[3] = z_motor.current_pos;
+		float tmp = (float)x_motor.current_pos/PULSES_PER_MM;
+		uint16_t *p = (uint16_t *)&tmp;
+		data[0] = p[1];
+		data[1] = p[0];
+		tmp = (float)z_motor.current_pos/PULSES_PER_MM;
+		xxxx= tmp;
+		data[2] = p[1];
+		data[3] = p[0];
 		Dwin_Write_VP(VP_X_STEP_MOTOR,data,4);
 		return 1;
 	}

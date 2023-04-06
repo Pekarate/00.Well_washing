@@ -5,4 +5,3 @@ data.c:114:5:is_step_differrent	1
 data.c:118:6:dt_Modify_step	2
 data.c:127:6:dt_system_data_init	3
 data.c:142:19:dt_store_system_data	2
-data.c:166:6:step_shake_process	14

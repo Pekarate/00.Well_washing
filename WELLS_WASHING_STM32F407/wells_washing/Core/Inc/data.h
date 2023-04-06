@@ -7,12 +7,12 @@
 
 #ifndef INC_DATA_H_
 #define INC_DATA_H_
-
+#include "main.h"
 #include "stdint.h"
 
 #define MAX_WELLS_NUM 10
 #define MAX_STEP_NUM 25
-#define FACTORY_CODE 0x5AA5
+#define FACTORY_CODE 0x5A5A
 
 #define FLASH_START_ADDRESS  0x08060000
 
