@@ -19,9 +19,40 @@
 typedef struct{
 	uint8_t type;
 	uint8_t wells;
-	uint16_t timing[6];
+	uint16_t timing[7];
 }_def_step;
 
+typedef struct{
+	uint8_t type;
+	uint8_t wells;
+	uint16_t wait1;
+	uint16_t wait2;
+	uint16_t shake;
+	uint16_t wait4;
+	uint16_t wait5;
+	uint16_t reserve[2];
+}_def_shake_step;
+
+typedef struct{
+	uint8_t type;
+	uint8_t wells;
+	uint16_t wait1;
+	uint16_t fill;
+	uint16_t wait2;
+	uint16_t shake;
+	uint16_t wait4;
+	uint16_t drain;
+	uint16_t wait5;
+}_def_washing_step;
+
+typedef struct{
+	uint8_t type;
+	uint8_t wells;
+	uint16_t heater_on;
+	uint16_t wait1;
+	uint16_t heater_off;
+	uint16_t reserve[4];
+}_def_drying_step;
 typedef struct{
 	uint32_t Z_bottom_pos;
 	uint32_t Well_position[MAX_WELLS_NUM];

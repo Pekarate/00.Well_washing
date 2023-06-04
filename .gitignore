@@ -9,3 +9,5 @@ WELLS_WASHING_STM32F407/.metadata/
 WELLS_WASHING_STM32F407/wells_washing/Debug/Core/Src/data.d
 *.d
 *.o
+*.o
+*.d

@@ -18,7 +18,7 @@ uint8_t	current_rx_index = 0;
 uint8_t *dw_rx_buf[10] = {0};
 
 int Dwin_Write_VP_String(uint16_t Addr,char *data,uint16_t slen);
-
+int dw_update_setup_page(uint8_t pg,uint8_t stepnumber);
 typedef struct{
 	char log[512];
 	uint8_t line_nums;
@@ -141,12 +141,29 @@ void Dwin_switch_page(int page_index)
 	Buf[1] = page_index;
 	Dwin_Write_VP(0X0084,Buf,2);
 }
+void Dwin_switch_running_page(uint8_t pg,uint8_t stepnumber)
+{
+	switch (system_data.flash_data.Program_para[pg][stepnumber].type) {
+		case STEP_TYPE_SHAKE:
+			Dwin_switch_page(PAGE_RUNNING_STEP_SHAKE);
+			break;
+		case STEP_TYPE_WASHING:
+			Dwin_switch_page(PAGE_RUNNING_STEP_WASHING);
+			break;
+		case STEP_TYPE_DRYING:
+			Dwin_switch_page(PAGE_RUNNING_STEP_DRYING);
+			break;
+		default:
+			break;
+	}
+	dw_update_setup_page(pg,stepnumber);
+}
 
 void Dwin_init(void)
 {
 	Dwin_reset();
 	HAL_Delay(1000);
-	Dwin_switch_page(05);
+//	Dwin_switch_page(05);
 	memset(&s_log,0,sizeof(s_log));
 }
 
@@ -158,40 +175,42 @@ void Dwin_reset(void)
 }
 
 int dw_update_setup_page(uint8_t pg,uint8_t stepnumber){
-	if((pg < 1 ) || (stepnumber <1)){
+	if((pg > NUM_MAX_WELL ) || (stepnumber >24)){
 			return -1;
 	}
-	uint16_t data[10];
+	uint16_t data[12];
 
-	data[0] = pg;
-	data[1] = stepnumber;
-	data[2] = system_data.flash_data.Program_para[pg-1][stepnumber-1].type;
-	data[3] = system_data.flash_data.Program_para[pg-1][stepnumber-1].wells;
-	for(int i=4;i<10;i++)
+	data[0] = pg+1;
+	data[1] = stepnumber+1;
+	data[2] = system_data.flash_data.Program_para[pg][stepnumber].type;
+	data[3] = system_data.flash_data.Program_para[pg][stepnumber].wells;
+	if((data[3] == 0) || (data[3] >= MAX_WELLS_NUM) )
+		data[3] = 1;
+	for(int i=4;i<11;i++)
 	{
-		data[i] = system_data.flash_data.Program_para[pg-1][stepnumber-1].timing[i-4];
+		data[i] = system_data.flash_data.Program_para[pg][stepnumber].timing[i-4];
 	}
-	Dwin_Write_VP(VP_SETUP_PARA,data,10);
+	Dwin_Write_VP(VP_SETUP_PARA,data,11);
 	return 1;
 }
 
+void show_user_page(){
+	Dwin_switch_page(PAGE_SETUP_USER_CTL);
+}
 void show_setup_page(uint8_t pg,uint8_t stepnumber){
-	if((pg < 1 ) || (stepnumber <1)){
+	if((pg > NUM_MAX_WELL ) || (stepnumber >24)){
 		return;
 	}
-	switch(system_data.flash_data.Program_para[pg-1][stepnumber-1].type){
-		case (STEP_TYPE_NONE):
-				Dwin_switch_page(PAGE_SETUP_STEP_NONE);
-				break;
-		case (STEP_TYPE_SHAKE):
-				Dwin_switch_page(PAGE_SETUP_STEP_SHAKE);
-				break;
+	switch(system_data.flash_data.Program_para[pg][stepnumber].type){
 		case (STEP_TYPE_WASHING):
 				Dwin_switch_page(PAGE_SETUP_STEP_WASHING);
 				break;
 		case (STEP_TYPE_DRYING):
 				Dwin_switch_page(PAGE_SETUP_STEP_DRYING);
 				break;
+		default:
+				Dwin_switch_page(PAGE_SETUP_STEP_SHAKE);
+			break;
 	}
 	dw_update_setup_page(pg,stepnumber);
 }
@@ -202,19 +221,30 @@ void dwin_update_step(uint8_t *data){
 	_def_step step;
 	uint8_t pg = data[8]; // 0x3000
 	uint8_t stepindex = data[10]; // 0x3001
-	step.type  =data[12];
 	step.wells =data[14];
-	for(int i=0;i<6;i++){
+	if(step.wells> NUM_MAX_WELL)
+			return;
+	switch (step.wells) {
+		case 1:
+			step.type = STEP_TYPE_SHAKE;
+			break;
+		case NUM_MAX_WELL:
+			step.type = STEP_TYPE_DRYING;
+			break;
+		default:
+			step.type = STEP_TYPE_WASHING;
+			break;
+	}
+	for(int i=0;i<7;i++){
 		step.timing[i] = (uint16_t)data[15+i*2]*256 + data[16+i*2];
 	}
-
 	dt_Modify_step(pg-1, stepindex-1, step);
 }
 
 void dwin_start_program(uint8_t pg){
 
 //	s_log.s_size = sprintf(s_log.log,"\r\nIF I DIE");
-	Dwin_switch_page(PAGE_MANUAL_CONTROL);
+//	Dwin_switch_page(PAGE_MANUAL_CONTROL);
 //	s_log_clear();
 	HAL_Delay(1);
 	char tmp[100];
@@ -224,7 +254,26 @@ void dwin_start_program(uint8_t pg){
 //	s_log_add_1_line(tmp);
 //	Dwin_Write_VP_String(0x3800,s_log.log, s_log.s_size);
 }
+void dwin_stop_program(void){
 
+
+}
+void dwin_change_target_well(uint8_t well){
+	if(well> NUM_MAX_WELL)
+		return;
+	uint8_t target_page = PAGE_SETUP_STEP_SHAKE;
+	switch (well) {
+		case 1:
+			break;
+		case NUM_MAX_WELL:
+			target_page = PAGE_SETUP_STEP_DRYING;
+			break;
+		default:
+			target_page = PAGE_SETUP_STEP_WASHING;
+			break;
+	}
+	Dwin_switch_page(target_page);
+}
 static uint8_t current_pg_setup;
 static uint8_t current_step_setup;
 int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
@@ -242,11 +291,15 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 		case BT_SETUP_CODE:
 				current_pg_setup=value = data[8];
 				current_step_setup =1;
-				show_setup_page(value,1);
+				show_setup_page(value-1,0);
 			break;
-	case BT_SWICH_SETUP_PAGE:
+		case BT_SETUP_TAR_GET_WELLS:
+				value = (uint16_t)data[7]*256+data[8];
+				dwin_change_target_well(value);
+				break;
+		case BT_SWICH_SETUP_PAGE:
 				current_step_setup = value = data[8];
-				show_setup_page(current_pg_setup,value);
+				show_setup_page(current_pg_setup-1,value-1);
 			break;
 		case BT_SWICH_SETUP_EXIT:
 				dw_update_step_numbers();
@@ -279,6 +332,16 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 				break;
 		case BT_START_PG:
 				dwin_start_program(data[8]);
+				break;
+		case BT_STOP_PG:
+				pg_stop();
+				break;
+		case BT_START_PROCEED:
+				value = (uint16_t)data[7]*256+data[8];
+				if(value == 1)
+				{
+					show_user_page();
+				}
 				break;
 
 		default:

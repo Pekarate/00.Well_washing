@@ -60,6 +60,7 @@ typedef enum{
 
 
 int pg_start(uint8_t pg,uint8_t stepindex);
+int pg_stop(void);
 void pg_process_loop(void);
 
 #endif /* INC_PROGRAM_PROCESS_H_ */

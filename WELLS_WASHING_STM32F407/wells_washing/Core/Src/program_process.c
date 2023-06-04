@@ -8,14 +8,19 @@
 #include "main.h"
 #include "data.h"
 #include "motor.h"
-
+#include "dw_display.h"
+#include "define.h"
 #define DEBUG 1
-#define LOG_TAG "MY_APP"
-#define LOGI(fmt, ...) printf("[%s] " fmt "\n", LOG_TAG, ##__VA_ARGS__)
+#define LOG_TAG "PRO"
+#define LOGI(fmt, ...) printf("[%s] " fmt "\r\n", LOG_TAG, ##__VA_ARGS__)
+#define LOG3(fmt, ...) while(0);//printf("[%s] " fmt "\n", LOG_TAG, ##__VA_ARGS__)
 
+_def_shake_step *shake_step;
+_def_drying_step *drying_step;
+_def_washing_step *washing_step;
 static uint8_t running_pg = 0;
 static uint8_t running_step= 0;
-static _def_step step_para;
+//static _def_step step_para;
 static uint32_t t_time = 0;
 _step_shake_state shake_state = SHAKE_STATE_IDE;
 int step_shake_start(void)
@@ -23,23 +28,25 @@ int step_shake_start(void)
 	if(shake_state == SHAKE_STATE_IDE)
 	{
 		LOGI("start step: %d of program : %d",running_step,running_pg);
-		step_para = system_data.flash_data.Program_para[running_pg][running_step];
+		shake_step = (_def_shake_step *)&system_data.flash_data.Program_para[running_pg][running_step];
 		shake_state = SHAKE_STATE_START;
 		return 1;
 	}
 	return 0;
 }
 //return 1 mean step done
-void show_infor_shake_step()
+void show_infor_shake_step(_def_shake_step shake_step)
 {
-	LOGI("1:Move to Wells: %d",step_para.wells);
-	LOGI("2:wait1 : %ds",step_para.timing[0]);
+	LOGI("---------------INFOR_SHAKE_STEP------------");
+	LOGI("1:Move to Wells: %d",shake_step.wells);
+	LOGI("2:wait1 : %ds",shake_step.wait1);
 	LOGI("3:move z to bottom");
-	LOGI("4:wait2 : %ds",step_para.timing[1]);
-	LOGI("5:shake on : %ds",step_para.timing[2]);
-	LOGI("6:wait4 : %ds",step_para.timing[3]);
+	LOGI("4:wait2 : %ds",shake_step.wait2);
+	LOGI("5:shake on : %ds",shake_step.shake);
+	LOGI("6:wait4 : %ds",shake_step.wait4);
 	LOGI("7:move z to top");
-	LOGI("8:wait5 : %ds",step_para.timing[4]);
+	LOGI("8:wait5 : %ds",shake_step.wait5);
+	LOGI("------------------------------------------");
 }
 int step_shake_process(void){
 	static _step_shake_state old_state = SHAKE_STATE_IDE;
@@ -52,20 +59,21 @@ int step_shake_process(void){
 	                break;
 	            case SHAKE_STATE_START:
 	                // handle SHAKE_STATE_START -> move x to well
-	            	show_infor_shake_step();
-	            	LOGI("move x to %lu",system_data.flash_data.Well_position[step_para.wells-1]);
-	            	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[step_para.wells-1]);
+	            	show_infor_shake_step(*shake_step);
+
+	            	LOGI("move x to %lu",system_data.flash_data.Well_position[shake_step->wells-1]);
+	            	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[shake_step->wells-1]);
 	                old_state = shake_state;
 	                shake_state = SHAKE_STATE_MOVE_WELLS;
 	                break;
 	            case SHAKE_STATE_MOVE_WELLS:
 	                // handle SHAKE_STATE_MOVE_WELLS
-	            	if(Mt_get_current_prosition(x_motor) == system_data.flash_data.Well_position[step_para.wells-1])
+	            	if(Mt_get_current_prosition(x_motor) == system_data.flash_data.Well_position[shake_step->wells-1])
 	            	{
-	            		LOGI("move x done, wait %ds",step_para.timing[0]);
+	            		LOGI("move x done, wait %ds",shake_step->wait1);
 						old_state = shake_state;
 						shake_state = SHAKE_STATE_WAIT;
-						t_time = HAL_GetTick() +  (uint32_t)step_para.timing[0] * 1000;
+						t_time = HAL_GetTick() +  (uint32_t)shake_step->wait1 * 1000;
 	            	}
 	                break;
 	            case SHAKE_STATE_WAIT:
@@ -80,8 +88,8 @@ int step_shake_process(void){
 	            		        break;
 	            		    case SHAKE_STATE_Z_BOTTOM:
 	            		    	mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos-1000);
-	            		    	t_time = HAL_GetTick() +  (uint32_t)step_para.timing[2] * 1000;
-	            		    	LOGI("start shake in %ds",step_para.timing[2]);
+	            		    	t_time = HAL_GetTick() +  (uint32_t)shake_step->shake * 1000;
+	            		    	LOGI("start shake in %ds",shake_step->shake);
 	            		    	shake_state = SHAKE_STATE_SHAKE;
 	            		        break;
 	            		    case SHAKE_STATE_SHAKE:
@@ -107,8 +115,8 @@ int step_shake_process(void){
 					{
 						old_state = shake_state;
 						shake_state = SHAKE_STATE_WAIT;
-						LOGI("wait2 %d",step_para.timing[1]);
-						t_time = HAL_GetTick() +  (uint32_t)step_para.timing[1] * 1000;
+						LOGI("wait2 %d",shake_step->wait2);
+						t_time = HAL_GetTick() +  (uint32_t)shake_step->wait2 * 1000;
 					}
 //					break;
 //	                old_state = shake_state;
@@ -123,9 +131,9 @@ int step_shake_process(void){
 					{
 	                	if(HAL_GetTick() > t_time)
 	                	{
-	                		LOGI("shake done, wait4 : %d",step_para.timing[3]);
+	                		LOGI("shake done, wait4 : %d",shake_step->wait4);
 	    	                old_state = shake_state;
-	    	                t_time = HAL_GetTick() +  (uint32_t)step_para.timing[3] * 1000;
+	    	                t_time = HAL_GetTick() +  (uint32_t)shake_step->wait4 * 1000;
 	    	                shake_state = SHAKE_STATE_WAIT;
 	                	}
 	                	else
@@ -137,9 +145,9 @@ int step_shake_process(void){
 	            case SHAKE_STATE_Z_TOP:
 	            	if(Mt_get_current_prosition(z_motor) == 0)
 					{
-	            		LOGI("all done wait5: %d",step_para.timing[4]);
+	            		LOGI("all done wait5: %d",shake_step->wait5);
 	            		old_state = shake_state;
-						t_time = HAL_GetTick() +  (uint32_t)step_para.timing[4] * 1000;
+						t_time = HAL_GetTick() +  (uint32_t)shake_step->wait5 * 1000;
 						shake_state = SHAKE_STATE_WAIT;
 					}
 	                break;
@@ -162,14 +170,18 @@ int step_shake_process(void){
 _step_ws_state ws_state = WS_STATE_IDE;
 _step_ws_state old_ws_state = WS_STATE_IDE;
 void start_fill_washing_solution(){
-	LOGI("start fill washing solution ");
+	LOGI("start fill washing solution");
+	HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, PUMP1_ON_LEVEL);
 }
 int is_washing_solution_full()
 {
-	return 1;
+	if(HAL_GPIO_ReadPin(WS_SOLUTION_FULL_GPIO_Port, WS_SOLUTION_FULL_Pin) == WS_SOLUTION_FULL_LEVEL)
+		return 1;
+	return 0;
 }
 void stop_fill_washing_solution(){
-	LOGI("stop fill washing solution ");
+	LOGI("stop fill washing solution");
+	HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, PUMP1_OFF_LEVEL);
 }
 
 
@@ -178,7 +190,9 @@ void start_drain_washing_solution(){
 }
 int is_washing_solution_empty()
 {
-	return 1;
+	if(HAL_GPIO_ReadPin(WS_SOLUTION_EMPTY_GPIO_Port, WS_SOLUTION_EMPTY_Pin) == WS_SOLUTION_EMPTY_LEVEL)
+			return 1;
+	return 0;
 }
 void stop_drain_washing_solution(){
 	LOGI("stop drain washing solution ");
@@ -188,23 +202,25 @@ int step_washing_start()
 	if(ws_state == WS_STATE_IDE)
 	{
 		LOGI("--------------- washing step: %d of program : %d----------------",running_step,running_pg);
-		step_para = system_data.flash_data.Program_para[running_pg][running_step];
+		washing_step = (_def_washing_step *)&system_data.flash_data.Program_para[running_pg][running_step];
 		shake_state = WS_STATE_START;
 		return 1;
 	}
 	return 0;
 }
 
-void show_infor_drying_step()
+void show_infor_washing_step(_def_washing_step ws_step)
 {
-	LOGI("1:Move to Wells: %d",step_para.wells);
-	LOGI("2:wait1 : %ds",step_para.timing[0]);
-	LOGI("3:fill washing solution\n4:move z to bottom");
-	LOGI("5:wait2 : %ds",step_para.timing[1]);
-	LOGI("6:shake on : %ds",step_para.timing[2]);
-	LOGI("7:wait4 : %ds",step_para.timing[3]);
-	LOGI("8:move z to top\n9:Drain washing solution");
-	LOGI("10:wait5 : %ds",step_para.timing[4]);
+	LOGI("---------------INFOR_WASHING_STEP------------");
+	LOGI("1:Move to Wells: %d",ws_step.wells);
+	LOGI("2:wait1 : %ds",ws_step.wait1);
+	LOGI("3:fill washing solution: %d \n4:move z to bottom",ws_step.fill);
+	LOGI("5:wait2 : %ds",ws_step.wait2);
+	LOGI("6:shake on : %ds",ws_step.shake);
+	LOGI("7:wait4 : %ds",ws_step.wait4);
+	LOGI("8:move z to top %d\n9:Drain washing solution",ws_step.drain);
+	LOGI("10:wait5 : %ds",ws_step.wait5);
+	LOGI("-------------------------------------------");
 }
 
 int step_washing_process(void)
@@ -215,18 +231,18 @@ int step_washing_process(void)
 	            ws_state = WS_STATE_START; // Example transition to next state
 	            break;
 	        case WS_STATE_START:
-	        	show_infor_drying_step();
-	            LOGI("move x to %lu",system_data.flash_data.Well_position[step_para.wells-1]);
-            	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[step_para.wells-1]); // m
+	        	show_infor_washing_step(*washing_step);
+	            LOGI("move x to %lu",system_data.flash_data.Well_position[washing_step->wells-1]);
+            	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[washing_step->wells-1]); // m
 	            ws_state = WS_STATE_MOVE_WELLS; // Example transition to next state
 	            break;
 	        case WS_STATE_MOVE_WELLS:
-	        	if(Mt_get_current_prosition(x_motor) == system_data.flash_data.Well_position[step_para.wells-1])
+	        	if(Mt_get_current_prosition(x_motor) == system_data.flash_data.Well_position[washing_step->wells-1])
 				{
-					LOGI("move x done, wait1 %ds",step_para.timing[0]);
+					LOGI("move x done, wait1 %ds",washing_step->wait1);
 					old_ws_state = ws_state;
 					ws_state = WS_STATE_WAIT;
-					t_time = HAL_GetTick() +  (uint32_t)step_para.timing[0] * 1000;
+					t_time = HAL_GetTick() +  (uint32_t)washing_step->wait1 * 1000;
 				}
 	            break;
 	        case WS_STATE_FILL_WS_SOLUTION:
@@ -241,9 +257,9 @@ int step_washing_process(void)
 	        case WS_STATE_Z_BOTTOM:
             	if(Mt_get_current_prosition(z_motor) == system_data.flash_data.Z_bottom_pos)
 				{
-            		LOGI("move z done, wait2 %ds",step_para.timing[1]);
+            		LOGI("move z done, wait2 %ds",washing_step->wait2);
 					old_ws_state = ws_state;
-	            	t_time = HAL_GetTick() +  (uint32_t)step_para.timing[1] * 1000;
+	            	t_time = HAL_GetTick() +  (uint32_t)washing_step->wait2 * 1000;
 		            ws_state = WS_STATE_WAIT; // Example transition to next state
 
 				}
@@ -257,9 +273,9 @@ int step_washing_process(void)
 				{
                 	if(HAL_GetTick() > t_time)
                 	{
-                		LOGI("shake done, wait4 : %d",step_para.timing[3]);
+                		LOGI("shake done, wait4 : %d",washing_step->wait4);
                 		old_ws_state = ws_state;
-    	                t_time = HAL_GetTick() +  (uint32_t)step_para.timing[3] * 1000;
+    	                t_time = HAL_GetTick() +  (uint32_t)washing_step->wait4 * 1000;
     	                ws_state = WS_STATE_WAIT;
                 	}
                 	else
@@ -272,18 +288,29 @@ int step_washing_process(void)
             	if(Mt_get_current_prosition(z_motor) == 0){
             		LOGI("ztop done, start drain ws solution");
             		old_ws_state = ws_state;
-            		start_drain_washing_solution();
+
 //					t_time = HAL_GetTick() +  (uint32_t)step_para.timing[4] * 1000;
-            		ws_state = WS_STATE_DRAIN_WS_SOLUTION;
+            		if(washing_step->drain)
+            		{
+						start_drain_washing_solution();
+						ws_state = WS_STATE_DRAIN_WS_SOLUTION;
+            		}
+            		else
+            		{
+            			LOGI("skip drain fill solution ");
+            			old_ws_state = ws_state;
+						t_time = HAL_GetTick() +  (uint32_t)washing_step->wait5 * 1000;
+						ws_state = WS_STATE_WAIT; // Example transition to next state
+            		}
 				}
 	            break;
 	        case WS_STATE_DRAIN_WS_SOLUTION:
 	            if(is_washing_solution_empty())
 	            {
-	            	LOGI("solution empty,wait5 :%ds",step_para.timing[4]);
+	            	LOGI("solution empty,wait5 :%ds",washing_step->wait5);
 	            	stop_drain_washing_solution();
 	            	old_ws_state = ws_state;
-	            	t_time = HAL_GetTick() +  (uint32_t)step_para.timing[4] * 1000;
+	            	t_time = HAL_GetTick() +  (uint32_t)washing_step->wait5 * 1000;
 	            	ws_state = WS_STATE_WAIT; // Example transition to next state
 	            }
 	            break;
@@ -293,14 +320,25 @@ int step_washing_process(void)
 	            	switch (old_ws_state) {
 						case WS_STATE_MOVE_WELLS:
 							LOGI("wait1 done");
-							ws_state = WS_STATE_FILL_WS_SOLUTION;
-							start_fill_washing_solution();
+							if(washing_step->fill)
+							{
+								ws_state = WS_STATE_FILL_WS_SOLUTION;
+								start_fill_washing_solution();
+							}
+							else
+							{
+								LOGI("skip fill washing solution");
+								LOGI("move z to bottom %lu",system_data.flash_data.Z_bottom_pos);
+								mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos); //@TODO
+								ws_state= WS_STATE_Z_BOTTOM;
+							}
 							break;
 						case WS_STATE_Z_BOTTOM:
 							LOGI("wait2 done");
 							mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos-1000);
-							t_time = HAL_GetTick() +  (uint32_t)step_para.timing[2] * 1000;
-							LOGI("start shake in %ds",step_para.timing[2]);
+							LOGI("start shake in %ds",washing_step->shake);
+							t_time = HAL_GetTick() +  (uint32_t)washing_step->shake * 1000;
+
 							ws_state = WS_STATE_SHAKE;
 							break;
 						case WS_STATE_SHAKE:
@@ -308,6 +346,7 @@ int step_washing_process(void)
 							mt_set_target_position(&z_motor,0);
 							ws_state = WS_STATE_Z_TOP;
 							break;
+						case WS_STATE_Z_TOP:
 						case WS_STATE_DRAIN_WS_SOLUTION:
 							LOGI("wait5 done");
 							ws_state = WS_STATE_Z_FINISH;
@@ -337,27 +376,46 @@ int step_drying_start()
 	if(ws_state == WS_STATE_IDE)
 	{
 		LOGI("--------------- drying step: %d of program : %d----------------",running_step,running_pg);
-		step_para = system_data.flash_data.Program_para[running_pg][running_step];
+		drying_step = (_def_drying_step *)&system_data.flash_data.Program_para[running_pg][running_step];
 		dy_state = DY_STATE_START;
 		return 1;
 	}
 	return 0;
 }
-
+void heater_on()
+{
+	LOG3("%u heater_on",HAL_GetTick());
+	HAL_GPIO_WritePin(HEATER_GPIO_Port, HEATER_Pin, HEATER_ON_LEVEL);
+}
+void heater_off()
+{
+	LOG3("%u heater_off",HAL_GetTick());
+	HAL_GPIO_WritePin(HEATER_GPIO_Port, HEATER_Pin, HEATER_OFF_LEVEL);
+}
+void show_infor_drying_step(_def_drying_step dr_step)
+{
+	LOGI("---------------INFOR_DRYING_STEP------------");
+	LOGI("1:Move to Wells: %d",dr_step.wells);
+	LOGI("2:hearter on : %d",dr_step.heater_on);
+	LOGI("3:move z to bottom");
+	LOGI("4:wait1 : %ds",dr_step.wait1);
+	LOGI("5:hearter off : %d",dr_step.heater_off);
+	LOGI("------------------------------------------");
+}
 int step_drying_process(void)
 {
 	switch (dy_state) {
 	    case DY_STATE_IDE:
 	        break;
 	    case DY_STATE_START:
-//        	show_infor_drying_step();
-            LOGI("move x to %lu",system_data.flash_data.Well_position[step_para.wells-1]);
-        	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[step_para.wells-1]); // m
+        	show_infor_drying_step(*drying_step);
+            LOGI("move x to %lu",system_data.flash_data.Well_position[drying_step->wells-1]);
+        	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[drying_step->wells-1]); // m
         	old_dy_state = dy_state;
         	dy_state = DY_STATE_MOVE_WELLS; // Example transition to next state
             break;
 	    case DY_STATE_MOVE_WELLS:
-        	if(Mt_get_current_prosition(x_motor) == system_data.flash_data.Well_position[step_para.wells-1])
+        	if(Mt_get_current_prosition(x_motor) == system_data.flash_data.Well_position[drying_step->wells-1])
 			{
 				LOGI("move x done, move z to bottom");
 				old_dy_state = dy_state;
@@ -370,18 +428,30 @@ int step_drying_process(void)
 			{
 				LOGI("move z done");
 				old_dy_state = dy_state;
-				dy_state = DY_HEATER_ON; // Example transition to next state
 
+				if(drying_step->heater_on)
+				{
+					dy_state = DY_HEATER_ON; // Example transition to next state
+				}
+				else
+				{
+					LOGI("skip heater on, wait : %ds",drying_step->wait1);
+			    	t_time = HAL_GetTick() +  (uint32_t)drying_step->wait1 * 1000;
+			    	dy_state = DY_STATE_WAIT; // Example transition to next state
+				}
 			}
 			break;
 	    case DY_HEATER_ON:
-	    	LOGI("heater on, wait : %ds",step_para.timing[0]);
+	    	heater_on();
+	    	LOGI("heater on, wait : %ds",drying_step->wait1);
 	    	old_dy_state = dy_state;
-	    	t_time = HAL_GetTick() +  (uint32_t)step_para.timing[0] * 1000;
+	    	t_time = HAL_GetTick() +  (uint32_t)drying_step->wait1 * 1000;
 	    	dy_state = DY_STATE_WAIT; // Example transition to next state
 	        break;
 	    case DY_HEATER_OFF:
+
 	    	LOGI("heater off");
+	    	heater_off();
 	    	mt_set_target_position(&z_motor,0);
 	    	dy_state = DY_STATE_Z_TOP;
 	        break;
@@ -397,7 +467,14 @@ int step_drying_process(void)
 			{
 				switch (old_dy_state) {
 					case DY_HEATER_ON:
-						dy_state = DY_HEATER_OFF; // Example transition to next state
+						if(drying_step->heater_off) {
+							dy_state = DY_HEATER_OFF; // Example transition to next state
+						} else {
+							LOGI("skip heater off");
+							mt_set_target_position(&z_motor,0);
+							dy_state = DY_STATE_Z_TOP;
+							break;
+						}
 						break;
 				    default:
 				        break;
@@ -429,8 +506,13 @@ int pg_start(uint8_t pg,uint8_t stepindex)
 	}
 	return 0;
 }
-
+int pg_stop(void)
+{
+	pgstate = PG_STATE_STOP;
+	return 1;
+}
 _step_type start_step(){
+	Dwin_switch_running_page(running_pg,running_step);
 	switch (system_data.flash_data.Program_para[running_pg][running_step].type) {
 		case STEP_TYPE_NONE:
 			LOGI("step :%d  isn't active",running_step);
@@ -496,8 +578,8 @@ void pg_process_loop(void) {
 					if(step_drying_process())
 					{
 						LOGI("drying step (%d) finish",running_step);
-						running_step++;
-						pgstate = PG_STATE_START;
+//						running_step++;
+						pgstate = PG_STATE_END;
 					}
 					break;
 				default:
@@ -506,11 +588,14 @@ void pg_process_loop(void) {
 			}
 			break;
 		case PG_STATE_STOP:
-//			printf("Program is stopping\n");
-			// Code to handle the stop state
+			x_mt_stop();
+			z_mt_stop();
+			LOGI("Program is stopping\n");
+			pgstate = PG_STATE_END;
 			break;
 		case PG_STATE_END:
 //			printf("Program has ended\n");
+			Dwin_switch_page(PAGE_RUNNING_END_PG);
 			LOGI("Program %d has ended",running_pg);
 			pgstate = PG_STATE_IDLE;
 			// Code to handle the end state

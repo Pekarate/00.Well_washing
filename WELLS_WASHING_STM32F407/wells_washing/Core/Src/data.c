@@ -19,20 +19,20 @@ const _flash_data flash_defaul = {
 									.Well_position ={5000,1000,2000,3000,4000,5000,6000,7000,8000,9000},
 									.Program_para ={
 														{ //program 1
-																{.type = 1,.wells = 1,.timing = {1,2,3,4,5,6}}, //step1
-																{.type = 2,.wells = 2,.timing = {1,2,3,4,5,6}}, //step2
-																{.type = 3,.wells = 3,.timing = {1,2,3,4,5,6}}, //step3
+																{.type = 1,.wells = 1,.timing = {1,2,3,4,5,6,7}}, //step1
+																{.type = 1,.wells = 2,.timing = {1,1,3,4,5,6,7}}, //step2
+																{.type = 1,.wells = 3,.timing = {1,2,3,4,5,6,7}}, //step3
 																{.type = 1,.wells = 4}, //step4
-																{.type = 2,.wells = 5}, //step5
+																{.type = 1,.wells = 5}, //step5
 																{.type = 0,.wells = 6}, //step6
 //																{.type = 1,.wells = 7}  //step7
 														},
 														{ //program 2
-																{.type = 2,.wells = 1,.timing = {1,2,3,4,5,6}}, //step1
+																{.type = 1,.wells = 1,.timing = {1,2,3,4,5,6}}, //step1
 																{.type = 1,.wells = 1}, //step2
-																{.type = 3,.wells = 1}, //step3
+																{.type = 1,.wells = 1}, //step3
 																{.type = 1,.wells = 1}, //step4
-																{.type = 2,.wells = 1}, //step5
+																{.type = 1,.wells = 1}, //step5
 //																{.type = 1,.wells = 1}, //step6
 //																{.type = 1,.wells = 1}  //step7
 														},

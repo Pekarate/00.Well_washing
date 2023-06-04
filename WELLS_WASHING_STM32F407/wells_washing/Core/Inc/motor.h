@@ -65,7 +65,8 @@ void mt_set_target_position(_motor_typedef *motor,uint32_t new_position);
 
 void x_step_mt_int(void);
 void x_step_motor_process(void);
-
+void x_mt_stop();
+void z_mt_stop();
 void z_step_mt_int(void);
 void z_step_motor_process(void);
 

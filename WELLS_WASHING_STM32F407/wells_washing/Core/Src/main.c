@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <program_process.h>
 #include "main.h"
 #include "usb_device.h"
 
@@ -28,6 +27,7 @@
 #include "dw_display.h"
 #include "motor.h"
 #include  "usbd_cdc_if.h"
+#include "program_process.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,7 +156,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-   HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -234,30 +234,30 @@ int main(void)
 	  dw_update_steper_positon();
 	  z_step_motor_process();
 	  dw_update_steper_positon();
-	  switch (usercommand) {
-		case 1:
-//			step_shake_start();
-			usercommand = 0;
-			break;
-		case 2:
-			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-			usercommand = 0;
-			break;
-		case 3:
-			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
-			usercommand = 0;
-			break;
-		case 4:
-			HAL_GPIO_TogglePin(Z_MOTOR_EN_GPIO_Port, Z_MOTOR_EN_Pin);
-			usercommand = 0;
-			break;
-		case 5:
-			HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1);
-			usercommand = 0;
-			break;
-		default:
-			break;
-	}
+//	  switch (usercommand) {
+//		case 1:
+////			step_shake_start();
+//			usercommand = 0;
+//			break;
+//		case 2:
+//			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+//			usercommand = 0;
+//			break;
+//		case 3:
+//			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
+//			usercommand = 0;
+//			break;
+//		case 4:
+//			HAL_GPIO_TogglePin(Z_MOTOR_EN_GPIO_Port, Z_MOTOR_EN_Pin);
+//			usercommand = 0;
+//			break;
+//		case 5:
+//			HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1);
+//			usercommand = 0;
+//			break;
+//		default:
+//			break;
+//	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -730,7 +730,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LD4_Pin|LD3_Pin|LD5_Pin|LD6_Pin
+  HAL_GPIO_WritePin(GPIOD, LD4_Pin|HEATER_Pin|PUMP2_Pin|PUMP1_Pin
                           |Audio_RST_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -792,9 +792,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
   HAL_GPIO_Init(CLK_IN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD4_Pin LD3_Pin LD5_Pin LD6_Pin
+  /*Configure GPIO pins : WS_SOLUTION_EMPTY_Pin WS_SOLUTION_FULL_Pin OTG_FS_OverCurrent_Pin */
+  GPIO_InitStruct.Pin = WS_SOLUTION_EMPTY_Pin|WS_SOLUTION_FULL_Pin|OTG_FS_OverCurrent_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LD4_Pin HEATER_Pin PUMP2_Pin PUMP1_Pin
                            Audio_RST_Pin */
-  GPIO_InitStruct.Pin = LD4_Pin|LD3_Pin|LD5_Pin|LD6_Pin
+  GPIO_InitStruct.Pin = LD4_Pin|HEATER_Pin|PUMP2_Pin|PUMP1_Pin
                           |Audio_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -814,12 +820,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : OTG_FS_OverCurrent_Pin */
-  GPIO_InitStruct.Pin = OTG_FS_OverCurrent_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MEMS_INT2_Pin */
   GPIO_InitStruct.Pin = MEMS_INT2_Pin;
