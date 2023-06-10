@@ -15,13 +15,13 @@
 _system_data system_data;
 
 const _flash_data flash_defaul = {
-									.Z_bottom_pos = 5000,
-									.Well_position ={5000,1000,2000,3000,4000,5000,6000,7000,8000,9000},
-									.Program_para ={
+											.Z_bottom_pos = 10000, //thiss iss z bottom possition
+											.Well_position ={100,800,1600,2400,3200,4000,4800,5600,6400,7200}, // you not set position for wells10
+											.Program_para ={
 														{ //program 1
-																{.type = 1,.wells = 1,.timing = {1,2,3,4,5,6,7}}, //step1
-																{.type = 1,.wells = 1,.timing = {2,1,2,2,2,2,2}}, //step2
-																{.type = 2,.wells = 5,.timing = {2,1,5,5,2,1,8}}, //step3
+																{.type = 2,.wells = 4,.timing = {1,1,3,4,5,1,5}}, //step1
+																{.type = 2,.wells = 2,.timing = {2,1,5,5,5,1,5}}, //step2
+																{.type = 1,.wells = 1,.timing = {1,5,2,3,2,1,8}}, //step3
 																{.type = 3,.wells = 10,.timing = {5,5,5,5,2,1,8}}, //step4
 																{.type = 0,.wells = 5}, //step5
 																{.type = 0,.wells = 6}, //step6
