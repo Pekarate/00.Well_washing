@@ -10,8 +10,9 @@
 #include "main.h"
 #include "stdint.h"
 
-#define MAX_WELLS_NUM 15
-#define MAX_STEP_NUM 25
+#define MAX_WELLS_NUM 	20
+#define MAX_PROGRAM_NUM 10
+#define MAX_STEP_NUM 	25
 #define FACTORY_CODE 0x5AAB
 
 #define FLASH_START_ADDRESS  0x08060000
@@ -56,15 +57,15 @@ typedef struct{
 typedef struct{
 	uint32_t Z_bottom_pos;
 	uint32_t Well_position[MAX_WELLS_NUM];
-	_def_step Program_para[MAX_WELLS_NUM][MAX_STEP_NUM];
+	_def_step Program_para[MAX_PROGRAM_NUM][MAX_STEP_NUM];
 	uint16_t factory_code;
 
 }_flash_data;
 
 typedef struct{
 	_flash_data flash_data;
-	uint16_t pg_stepnumber[MAX_WELLS_NUM];
-	uint16_t pg_total_time[MAX_WELLS_NUM];
+	uint16_t pg_stepnumber[MAX_PROGRAM_NUM];
+	uint16_t pg_total_time[MAX_PROGRAM_NUM];
 }_system_data;
 
 typedef enum{
