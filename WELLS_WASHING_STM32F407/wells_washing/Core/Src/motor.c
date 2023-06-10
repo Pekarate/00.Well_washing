@@ -26,6 +26,9 @@ void mt_move_to_home(_motor_typedef *motor){
 		motor->command = CMD_REQUEST_HOME;
 	}
 }
+int isMotor_atHome(_motor_typedef *motor){
+	return(!motor->current_pos);
+}
 
 void mt_set_target_position(_motor_typedef *motor,uint32_t new_position){
 	motor->next_pos = new_position;
@@ -56,6 +59,7 @@ void x_mt_start(){
 
 void x_mt_stop()
 {
+	x_motor.next_pos = x_motor.current_pos = htim2.Instance->CNT;
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 }
 
@@ -213,6 +217,7 @@ void z_mt_start(){
 
 void z_mt_stop()
 {
+	z_motor.next_pos = z_motor.current_pos = htim5.Instance->CNT;
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
 }
 

@@ -87,19 +87,33 @@ void pg_process_loop(void) {
 //			printf("Program is idle\n");
 			// Code to handle the idle state
 			break;
+
 		case PG_STATE_START:
 			if(running_step == MAX_STEP_NUM){
 				pgstate= PG_STATE_END;
 				break;
 			}
-			if(start_step()!= STEP_TYPE_NONE) {
-				pgstate= PG_STATE_RUNNING;
-			}
-			else {
-				running_step++;
+			if(isMotor_atHome(&z_motor))
+			{
+				if(start_step()!= STEP_TYPE_NONE) {
+					pgstate= PG_STATE_RUNNING;
+				}
+				else {
+					running_step++;
+				}
+			} else {
+				LOGW(LOG_TAG,"start program without Z at home");
+				mt_move_to_home(&z_motor);
+				pgstate= PG_STATE_WAIT_HOMEZ;
 			}
 			// Code to handle the start state
 			break;
+		case PG_STATE_WAIT_HOMEZ:
+				if(isMotor_atHome(&z_motor)){
+					pgstate= PG_STATE_START;
+				}
+				break;
+
 		case PG_STATE_RUNNING:
 			switch (system_data.flash_data.Program_para[running_pg][running_step].type) {
 				case STEP_TYPE_SHAKE:
@@ -137,7 +151,7 @@ void pg_process_loop(void) {
 			step_shake_stop();
 			step_washing_stop();
 			step_drying_stop();
-			LOGI(LOG_TAG,"Program is stopping\n");
+			LOGW(LOG_TAG,"Program is stopping\n");
 			pgstate = PG_STATE_END;
 			break;
 		case PG_STATE_END:

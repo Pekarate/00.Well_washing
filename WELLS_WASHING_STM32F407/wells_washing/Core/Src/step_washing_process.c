@@ -68,6 +68,7 @@ int step_washing_start()
 	return 0;
 }
 int step_washing_stop(void){
+	ws_state = WS_STATE_IDE;
 	stop_fill_washing_solution();
 	stop_drain_washing_solution();
 	return 1;
@@ -111,10 +112,11 @@ int step_washing_process(void)
 	        case WS_STATE_FILL_WS_SOLUTION:
 	            if(is_washing_solution_full())
 	            {
+	            	stop_fill_washing_solution();
 					LOGI(LOG_TAG,"Fill done,move z to bottom %lu",system_data.flash_data.Z_bottom_pos);
 					mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos); //@TODO
 					ws_state = WS_STATE_Z_BOTTOM;
-	            	stop_fill_washing_solution();
+
 	            }
 	            break;
 	        case WS_STATE_Z_BOTTOM:
@@ -151,7 +153,6 @@ int step_washing_process(void)
             	if(Mt_get_current_prosition(z_motor) == 0){
             		LOGI(LOG_TAG,"ztop done, start drain ws solution");
             		old_ws_state = ws_state;
-
 //					ws_time = HAL_GetTick() +  (uint32_t)step_para.timing[4] * 1000;
             		if(washing_step->drain)
             		{

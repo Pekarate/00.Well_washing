@@ -61,6 +61,7 @@ extern _motor_typedef x_motor,z_motor;
 #define Mt_get_current_prosition(X) X.current_pos
 
 void mt_move_to_home(_motor_typedef *motor);
+int isMotor_atHome(_motor_typedef *motor);
 void mt_set_target_position(_motor_typedef *motor,uint32_t new_position);
 
 void x_step_mt_int(void);
