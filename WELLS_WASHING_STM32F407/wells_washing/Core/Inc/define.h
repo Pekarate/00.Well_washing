@@ -9,7 +9,7 @@
 #define INC_DEFINE_H_
 
 #define PULSES_PER_MM 		 7
-#define NUM_MAX_WELL		 10
+#define NUM_MAX_WELL		 15
 
 #define PUMP1_ON_LEVEL 			1
 #define PUMP1_OFF_LEVEL 		0

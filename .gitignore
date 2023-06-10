@@ -12,3 +12,12 @@ WELLS_WASHING_STM32F407/wells_washing/Debug/Core/Src/data.d
 *.o
 *.d
 *.c
+WELLS_WASHING_STM32F407/wells_washing/Debug/USB_DEVICE/App/usbd_cdc_if.o
+*.o
+*.cyclo
+*.su
+*.su
+WELLS_WASHING_STM32F407/wells_washing/Debug/Core/Src/program_process.su
+*.cyclo
+WELLS_WASHING_STM32F407/wells_washing/Debug/Core/Src/program_process.cyclo
+WELLS_WASHING_STM32F407/wells_washing/Debug/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o
