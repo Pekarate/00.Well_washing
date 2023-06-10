@@ -10,7 +10,7 @@
 #include "main.h"
 #include "stdint.h"
 
-#define MAX_WELLS_NUM 10
+#define MAX_WELLS_NUM 15
 #define MAX_STEP_NUM 25
 #define FACTORY_CODE 0x5AAB
 
