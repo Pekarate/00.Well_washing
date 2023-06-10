@@ -140,7 +140,7 @@ void home_process(_motor_typedef *motor)
 	}
 }
 void x_step_motor_process(void){
-	static uint32_t time_x_check_home = 0;
+	static uint32_t time_x_check_home = 3000;
 	x_motor.current_pos = htim2.Instance->CNT;
 	if(HAL_GetTick() > time_x_check_home){
 		x_step_motor_home_position();
@@ -154,7 +154,7 @@ void x_step_motor_process(void){
 			break;
 		case MT_STATE_START:
 			x_mt_set_dir();
-			if(x_motor.is_home == 1)
+			if(x_motor.current_pos == 0)
 			{
 				time_x_check_home = HAL_GetTick()+100;
 			}
@@ -253,7 +253,7 @@ void z_step_motor_home_position()
 
 
 void z_step_motor_process(void){
-	static uint32_t time_z_check_home = 0;
+	static uint32_t time_z_check_home = 3000;
 	z_motor.current_pos = htim5.Instance->CNT;
 	if(HAL_GetTick() > time_z_check_home){
 		z_step_motor_home_position();
@@ -273,9 +273,9 @@ void z_step_motor_process(void){
 			break;
 		case MT_STATE_START:
 			z_mt_set_dir();
-			if(z_motor.is_home == 1)
+			if(z_motor.current_pos == 1)
 			{
-				time_z_check_home = HAL_GetTick()+100;
+				time_z_check_home = HAL_GetTick()+10000;
 			}
 			z_mt_start();
 			z_motor.state = MT_STATE_RUNING;

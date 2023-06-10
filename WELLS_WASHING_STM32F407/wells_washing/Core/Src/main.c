@@ -194,18 +194,39 @@ int main(void)
 //  HAL_TIM_Base_Start(&htim3);
   x_step_mt_int();
   z_step_mt_int();
-  mt_move_to_home(&x_motor);
+  if(!HAL_GPIO_ReadPin(Z_HOME_SWITCH_GPIO_Port, Z_HOME_SWITCH_Pin))
+  {
+	  step_mt_move_foward(&z_motor,100);
+	  while(1){  // home Z
+	  	  z_step_motor_process();
+//	  	  dw_update_steper_positon();
+	  	  if(z_motor.current_pos == 100)
+	  		  break;
+	    }
+  }
+
   mt_move_to_home(&z_motor);
   while(1){  // home Z
 	  z_step_motor_process();
-	  dw_update_steper_positon();
+//	  dw_update_steper_positon();
 	  if(z_motor.is_home)
 		  break;
   }
-  while(1){  // home Z
+
+  if(!HAL_GPIO_ReadPin(X_HOME_SWITCH_GPIO_Port, X_HOME_SWITCH_Pin))
+    {
+  	  step_mt_move_foward(&x_motor,100);
+  	  while(1){  // home Z
+  	  	  x_step_motor_process();
+  //	  	  dw_update_steper_positon();
+  	  	  if(x_motor.current_pos == 100)
+  	  		  break;
+  	    }
+    }
+  mt_move_to_home(&x_motor);
+  while(1){  // home X
 	  x_step_motor_process();
-	  dw_update_steper_positon();
-	  dw_update_steper_positon();
+//	  dw_update_steper_positon();
 	  if(x_motor.is_home)
 		  break;
  }
