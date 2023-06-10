@@ -19,3 +19,5 @@
 ../Core/Src/motor.c:230:6:z_step_mt_int	8	static
 ../Core/Src/motor.c:238:6:z_step_motor_home_position	8	static
 ../Core/Src/motor.c:255:6:z_step_motor_process	8	static
+../Core/Src/motor.c:302:6:x_motor_boot_start	8	static
+../Core/Src/motor.c:321:6:z_motor_boot_start	8	static

@@ -140,7 +140,7 @@ void home_process(_motor_typedef *motor)
 	}
 }
 void x_step_motor_process(void){
-	static uint32_t time_x_check_home = 3000;
+	static uint32_t time_x_check_home = 0;
 	x_motor.current_pos = htim2.Instance->CNT;
 	if(HAL_GetTick() > time_x_check_home){
 		x_step_motor_home_position();
@@ -154,7 +154,7 @@ void x_step_motor_process(void){
 			break;
 		case MT_STATE_START:
 			x_mt_set_dir();
-			if(x_motor.current_pos == 0)
+			if(x_motor.is_home == 1)
 			{
 				time_x_check_home = HAL_GetTick()+100;
 			}
@@ -253,7 +253,7 @@ void z_step_motor_home_position()
 
 
 void z_step_motor_process(void){
-	static uint32_t time_z_check_home = 3000;
+	static uint32_t time_z_check_home = 0;
 	z_motor.current_pos = htim5.Instance->CNT;
 	if(HAL_GetTick() > time_z_check_home){
 		z_step_motor_home_position();
@@ -273,9 +273,9 @@ void z_step_motor_process(void){
 			break;
 		case MT_STATE_START:
 			z_mt_set_dir();
-			if(z_motor.current_pos == 1)
+			if(z_motor.is_home == 1)
 			{
-				time_z_check_home = HAL_GetTick()+10000;
+				time_z_check_home = HAL_GetTick()+100;
 			}
 			z_mt_start();
 			z_motor.state = MT_STATE_RUNING;
@@ -299,5 +299,41 @@ void z_step_motor_process(void){
 			break;
 	}
 }
+void x_motor_boot_start(void)
+{
+	if(!HAL_GPIO_ReadPin(X_HOME_SWITCH_GPIO_Port, X_HOME_SWITCH_Pin))
+	  {
+		  step_mt_move_foward(&x_motor,100);
+		  x_mt_set_dir();
+		  x_mt_start();
+		  while(htim2.Instance->CNT < 100);
+		  x_mt_stop();
+	  }
+	  mt_move_to_home(&x_motor);
+	  while(1){  // home X
+		  x_step_motor_process();
+	//	  dw_update_steper_positon();
+		  if(x_motor.is_home)
+			  break;
+	  }
+}
 
+void z_motor_boot_start(void)
+{
+	if(!HAL_GPIO_ReadPin(Z_HOME_SWITCH_GPIO_Port, Z_HOME_SWITCH_Pin))
+	  {
+		  step_mt_move_foward(&z_motor,100);
+		  z_mt_set_dir();
+		  z_mt_start();
+		  while(htim5.Instance->CNT < 100);
+		  z_mt_stop();
+	  }
+	  mt_move_to_home(&z_motor);
+	  while(1){  // home Z
+		  z_step_motor_process();
+	//	  dw_update_steper_positon();
+		  if(z_motor.is_home)
+			  break;
+	  }
+}
 

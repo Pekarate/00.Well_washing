@@ -194,42 +194,8 @@ int main(void)
 //  HAL_TIM_Base_Start(&htim3);
   x_step_mt_int();
   z_step_mt_int();
-  if(!HAL_GPIO_ReadPin(Z_HOME_SWITCH_GPIO_Port, Z_HOME_SWITCH_Pin))
-  {
-	  step_mt_move_foward(&z_motor,100);
-	  while(1){  // home Z
-	  	  z_step_motor_process();
-//	  	  dw_update_steper_positon();
-	  	  if(z_motor.current_pos == 100)
-	  		  break;
-	    }
-  }
-
-  mt_move_to_home(&z_motor);
-  while(1){  // home Z
-	  z_step_motor_process();
-//	  dw_update_steper_positon();
-	  if(z_motor.is_home)
-		  break;
-  }
-
-  if(!HAL_GPIO_ReadPin(X_HOME_SWITCH_GPIO_Port, X_HOME_SWITCH_Pin))
-    {
-  	  step_mt_move_foward(&x_motor,100);
-  	  while(1){  // home Z
-  	  	  x_step_motor_process();
-  //	  	  dw_update_steper_positon();
-  	  	  if(x_motor.current_pos == 100)
-  	  		  break;
-  	    }
-    }
-  mt_move_to_home(&x_motor);
-  while(1){  // home X
-	  x_step_motor_process();
-//	  dw_update_steper_positon();
-	  if(x_motor.is_home)
-		  break;
- }
+  z_motor_boot_start();
+  x_motor_boot_start();
 //  uint32_t ti;
   printf("code started \n");
   HAL_Delay(100);
@@ -424,7 +390,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 40;
+  htim1.Init.Prescaler = 30;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 999;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -544,7 +510,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 40;
+  htim3.Init.Prescaler = 30;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 999;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

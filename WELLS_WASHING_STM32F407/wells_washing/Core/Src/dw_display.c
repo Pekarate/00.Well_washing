@@ -14,6 +14,15 @@
 #include "dw_display.h"
 #include "motor.h"
 #include "stdio.h"
+#include "define.h"
+
+#ifdef ENABLE_LOG_DWIN_DISPLAY
+	#define LOG_TAG "DWIN "
+#else
+	#undef LOGI
+	#define LOGI(fmt, ...)
+#endif
+
 uint8_t	current_rx_index = 0;
 uint8_t *dw_rx_buf[10] = {0};
 
@@ -243,13 +252,14 @@ void dwin_update_step(uint8_t *data){
 
 void dwin_start_program(uint8_t pg){
 
-//	s_log.s_size = sprintf(s_log.log,"\r\nIF I DIE");
-//	Dwin_switch_page(PAGE_MANUAL_CONTROL);
-//	s_log_clear();
-	HAL_Delay(1);
-	char tmp[100];
-	sprintf(tmp,"START PROGRAM %d",pg);
-	pg_start(pg-1, 0);
+	uint8_t index_pg = pg-1;
+	if(index_pg < MAX_PROGRAM_NUM){
+		LOGI(LOG_TAG,"Request start program index: %d",index_pg);
+		pg_start(index_pg, 0);
+	}
+	else{
+		LOGE(LOG_TAG,"Request start fail pg: %d",pg);
+	}
 
 //	s_log_add_1_line(tmp);
 //	Dwin_Write_VP_String(0x3800,s_log.log, s_log.s_size);

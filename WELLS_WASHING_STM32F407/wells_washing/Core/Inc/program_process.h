@@ -58,14 +58,20 @@ typedef enum{
 
 }_step_dy_state;
 
-int step_washing_start();
+int step_washing_start(void);
+int step_washing_stop(void);
 int step_washing_process(void);
 
-int step_shake_start(void);
 
-int step_drying_start();
-int step_shake_process(void);
+
+int step_drying_start(void);
+int step_drying_stop(void);
 int step_drying_process(void);
+
+int step_shake_start(void);
+int step_shake_stop(void);
+int step_shake_process(void);
+
 
 int pg_start(uint8_t pg,uint8_t stepindex);
 int pg_stop(void);

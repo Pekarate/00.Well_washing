@@ -69,7 +69,8 @@ void x_mt_stop();
 void z_mt_stop();
 void z_step_mt_int(void);
 void z_step_motor_process(void);
-
+void x_motor_boot_start(void);
+void z_motor_boot_start(void);
 
 int dw_update_steper_positon(void);
 void step_mt_move_foward(_motor_typedef *step,uint32_t numstep);
