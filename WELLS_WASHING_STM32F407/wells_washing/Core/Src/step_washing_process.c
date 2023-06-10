@@ -43,6 +43,7 @@ void stop_fill_washing_solution(){
 
 void start_drain_washing_solution(){
 	LOGI(LOG_TAG,"start drain fill solution ");
+	HAL_GPIO_WritePin(PUMP2_GPIO_Port, PUMP2_Pin, PUMP2_ON_LEVEL);
 }
 int is_washing_solution_empty()
 {
@@ -51,7 +52,9 @@ int is_washing_solution_empty()
 	return 0;
 }
 void stop_drain_washing_solution(){
+
 	LOGI(LOG_TAG,"stop drain washing solution ");
+	HAL_GPIO_WritePin(PUMP2_GPIO_Port, PUMP2_Pin, PUMP2_OFF_LEVEL);
 }
 int step_washing_start()
 {
