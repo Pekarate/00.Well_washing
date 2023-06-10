@@ -11,3 +11,4 @@ WELLS_WASHING_STM32F407/wells_washing/Debug/Core/Src/data.d
 *.o
 *.o
 *.d
+*.c

@@ -184,7 +184,7 @@ int dw_update_setup_page(uint8_t pg,uint8_t stepnumber){
 	data[1] = stepnumber+1;
 	data[2] = system_data.flash_data.Program_para[pg][stepnumber].type;
 	data[3] = system_data.flash_data.Program_para[pg][stepnumber].wells;
-	if((data[3] == 0) || (data[3] >= MAX_WELLS_NUM) )
+	if((data[3] == 0) || (data[3] > MAX_WELLS_NUM) )
 		data[3] = 1;
 	for(int i=4;i<11;i++)
 	{
