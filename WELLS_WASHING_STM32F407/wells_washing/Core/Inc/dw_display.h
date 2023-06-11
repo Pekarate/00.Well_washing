@@ -25,7 +25,8 @@
 #define PAGE_MANUAL_CONTROL     5
 #define PAGE_RUNNING 			6
 
-#define VP_STEP_NUMBERS			0x2000
+#define VP_LOG_ADDRESS			0x2000
+
 #define VP_SETUP_PARA			0x3000
 #define VP_X_STEP_MOTOR 		0x2200
 #define VP_Z_STEP_MOTOR 		0x2202
@@ -59,6 +60,21 @@
 
 #define MAX_LOG_LINE_NUMS  22
 
+#define SHOW_LOG_ENABLE	 1
+
+#define LOG_SP_ADDRESS			0x6000
+#define LOG_COLOR_ADDRESS		LOG_SP_ADDRESS + 3
+#define LOG_LEN_ADDRESS			LOG_SP_ADDRESS + 8
+#define LOG_INFOR_COLOR			0x1F72
+#define LOG_WARNING_COLOR		0xF5C9
+#define LOG_ERROR_COLOR			0xF800
+
+typedef enum{
+	LOG_INFOR =LOG_INFOR_COLOR,
+	LOG_WARNING =LOG_WARNING_COLOR,
+	LOG_ERROR = LOG_ERROR_COLOR
+}_Log_type;
+
 void Dwin_switch_page(int page_index);
 int dw_update_step_numbers(void);
 void Dwin_init(void);
@@ -67,5 +83,11 @@ void Dwin_reset(void);
 void s_log_add_1_line(char *line);
 void dw_log_deamon(void);
 void Dwin_switch_running_page(uint8_t pg,uint8_t stepnumber);
+
+
+void dwin_log_change_color(uint16_t color);
+void dwin_log_visiable(uint16_t visible);
+void dwin_log_text(_Log_type type,char *data, int len,uint32_t time);
+void dwin_log_timeout(void);
 
 #endif /* INC_DW_DISPLAY_H_ */

@@ -63,9 +63,8 @@ int step_washing_start()
 		LOGI(LOG_TAG,"--------------- washing step: %d of program : %d----------------",running_step,running_pg);
 		washing_step = (_def_washing_step *)&system_data.flash_data.Program_para[running_pg][running_step];
 		ws_state = WS_STATE_START;
-		return 1;
 	}
-	return 0;
+	return ws_state;
 }
 int step_washing_stop(void){
 	ws_state = WS_STATE_IDE;

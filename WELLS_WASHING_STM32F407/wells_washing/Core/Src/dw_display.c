@@ -113,15 +113,15 @@ int Dwin_Write_VP(uint16_t Addr,uint16_t *data,uint16_t len)
 
 int Dwin_Write_VP_String(uint16_t Addr,char *data,uint16_t slen)
 {
+	uint8_t DwinBuf[200] = {0};
+	uint16_t slentmp = slen;
 	if(slen %2)
 	{
-		data[slen] =0;
-		slen++;
+		slentmp++;
 	}
-	uint8_t DwinBuf[300];
 	DwinBuf[0]= 0x5A;
 	DwinBuf[1]= 0xA5;
-	DwinBuf[2]= slen+2 +1;  // 2byte for address and 1 code 0x82
+	DwinBuf[2]= slentmp+2 +1 +2 ;  // 2byte for address and 1 code 0x82 2 byte 0
 	DwinBuf[3]= 0x82;
 	DwinBuf[4]= Addr>>8;
 	DwinBuf[5]= Addr;
@@ -129,8 +129,8 @@ int Dwin_Write_VP_String(uint16_t Addr,char *data,uint16_t slen)
 	{
 		DwinBuf[6+i] = data[i];
 	}
-    slen = slen +6;
-    Dw_write(DwinBuf, slen);
+	slentmp = slentmp +6+2;
+    Dw_write(DwinBuf, slentmp);
 	return 1;
 }
 int Dwin_read_VP(uint16_t Addr,uint16_t *data,uint16_t len)
@@ -155,12 +155,15 @@ void Dwin_switch_running_page(uint8_t pg,uint8_t stepnumber)
 	switch (system_data.flash_data.Program_para[pg][stepnumber].type) {
 		case STEP_TYPE_SHAKE:
 			Dwin_switch_page(PAGE_RUNNING_STEP_SHAKE);
+			LOGI(LOG_TAG,"SWITCH TO PAGE_RUNNING_STEP_SHAKE");
 			break;
 		case STEP_TYPE_WASHING:
 			Dwin_switch_page(PAGE_RUNNING_STEP_WASHING);
+			LOGI(LOG_TAG,"SWITCH TO PAGE_RUNNING_STEP_WASHING");
 			break;
 		case STEP_TYPE_DRYING:
 			Dwin_switch_page(PAGE_RUNNING_STEP_DRYING);
+			LOGI(LOG_TAG,"SWITCH TO PAGE_RUNNING_STEP_DRYING");
 			break;
 		default:
 			break;
@@ -193,7 +196,7 @@ int dw_update_setup_page(uint8_t pg,uint8_t stepnumber){
 	data[1] = stepnumber+1;
 	data[2] = system_data.flash_data.Program_para[pg][stepnumber].type;
 	data[3] = system_data.flash_data.Program_para[pg][stepnumber].wells;
-	if((data[3] == 0) || (data[3] > MAX_WELLS_NUM) )
+	if((data[3] > MAX_WELLS_NUM) )
 		data[3] = 1;
 	for(int i=4;i<11;i++)
 	{
@@ -312,7 +315,6 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 				show_setup_page(current_pg_setup-1,value-1);
 			break;
 		case BT_SWICH_SETUP_EXIT:
-				dw_update_step_numbers();
 				current_pg_setup =0;
 			break;
 		case BT_SWICH_SETUP_APPLY:
@@ -360,13 +362,10 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 	return 1;
 }
 
-int dw_update_step_numbers(void){
-	dt_calculator_pg_stepnumber();
-	Dwin_Write_VP(VP_STEP_NUMBERS,system_data.pg_stepnumber,10);
-	return 1;
-}
+
 float xxxx;
 int dw_update_steper_positon(void){
+	return 1;
 	static uint32_t time_tmp =0;
 	if( (HAL_GetTick() > time_tmp)&&((x_motor.old_pos != x_motor.current_pos) || (z_motor.old_pos != z_motor.current_pos)))
 	{
@@ -388,3 +387,51 @@ int dw_update_steper_positon(void){
 	return 0;
 }
 
+void dwin_log_change_color(uint16_t color){
+	Dwin_Write_VP(LOG_COLOR_ADDRESS, &color, 1);
+}
+
+void dwin_log_change_len(uint16_t len){
+	static uint16_t oldlen = 200;
+	if(oldlen != len)
+	{
+		oldlen = len;
+		Dwin_Write_VP(LOG_LEN_ADDRESS, &len, 1);
+	}
+}
+
+void dwin_log_visiable(uint16_t visible){
+	static uint16_t oldvisible = 1;
+	if( oldvisible == visible)
+		return;
+	oldvisible = visible;
+	if(visible){
+		dwin_log_change_len(200);
+	} else {
+		dwin_log_change_len(0);
+	}
+}
+#define MAX_UINT32 (0-1)
+uint32_t log_timout= MAX_UINT32;
+void dwin_log_text(_Log_type type,char *data, int len,uint32_t time){
+#if SHOW_LOG_ENABLE
+	static _Log_type oldtype = -1;
+	if(oldtype != type) {
+		oldtype = type;
+		dwin_log_change_color(oldtype);
+	}
+	dwin_log_visiable(1);
+	Dwin_Write_VP_String(VP_LOG_ADDRESS, data, len);
+	log_timout = HAL_GetTick() + time;
+	if(log_timout < HAL_GetTick())
+		log_timout= MAX_UINT32;
+#endif
+}
+
+void dwin_log_timeout(void){
+	if(HAL_GetTick() > log_timout)
+	{
+		dwin_log_visiable(0);
+		log_timout= MAX_UINT32;
+	}
+}

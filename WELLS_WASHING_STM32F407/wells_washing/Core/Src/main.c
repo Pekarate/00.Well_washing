@@ -190,29 +190,33 @@ int main(void)
   Dwin_init();
   dt_system_data_init();
   uart_dma_start();
-  dw_update_step_numbers();
+
 //  HAL_TIM_Base_Start(&htim3);
   x_step_mt_int();
   z_step_mt_int();
   z_motor_boot_start();
   x_motor_boot_start();
-//  uint32_t ti;
+
   printf("code started \n");
   HAL_Delay(100);
+  dwin_log_visiable(0);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   usercommand =1;
+    uint32_t ti;
   while (1)
   {
+	  dwin_log_timeout();
 	  debug_process();
 //	  if(HAL_GetTick()> ti)
 //	  {
 //			char tmp[100];
-//			sprintf(tmp,"CURRENT_TIME :%d",cnt ++);
-//			s_log_add_1_line(tmp);
-//		   ti = HAL_GetTick() +500;
+//			int len = sprintf(tmp,"CURRENT_TIME :%lu",HAL_GetTick());
+//			dwin_log_text(LOG_INFOR,tmp,len, 1000);
+//			ti = HAL_GetTick() +2000;
 //	  }
 //	  step_shake_process();
 	  pg_process_loop();

@@ -59,6 +59,7 @@ void x_mt_start(){
 
 void x_mt_stop()
 {
+	x_motor.command = CMD_IDLE;
 	x_motor.next_pos = x_motor.current_pos = htim2.Instance->CNT;
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 }
@@ -217,6 +218,7 @@ void z_mt_start(){
 
 void z_mt_stop()
 {
+	z_motor.command = CMD_IDLE;
 	z_motor.next_pos = z_motor.current_pos = htim5.Instance->CNT;
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
 }

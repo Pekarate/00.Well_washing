@@ -28,9 +28,8 @@ int step_shake_start(void)
 	{
 		shake_step = (_def_shake_step *)&system_data.flash_data.Program_para[running_pg][running_step];
 		shake_state = SHAKE_STATE_START;
-		return 1;
 	}
-	return 0;
+	return shake_state;
 }
 
 int step_shake_stop(void)

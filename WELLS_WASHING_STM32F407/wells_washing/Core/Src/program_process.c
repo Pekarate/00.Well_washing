@@ -38,6 +38,8 @@ int pg_start(uint8_t pg,uint8_t stepindex)
 		running_step = stepindex;
 		pgstate = PG_STATE_START;
 		return 1;
+	} else {
+		LOGE(LOG_TAG,"pg_start fail running_pg  %d, pgstate: %d",running_pg,pgstate);
 	}
 	return 0;
 }
@@ -47,30 +49,39 @@ int pg_stop(void)
 	return 1;
 }
 _step_type start_step(){
-	Dwin_switch_running_page(running_pg,running_step);
+//	Dwin_switch_running_page(running_pg,running_step);
 	switch (system_data.flash_data.Program_para[running_pg][running_step].type) {
 		case STEP_TYPE_NONE:
 			LOGW(LOG_TAG,"step :%d  isn't active",running_step);
 			break;
 		case STEP_TYPE_SHAKE:
-			if(step_shake_start()) {
-				LOGI(LOG_TAG,"step_shake_start done index: %d",running_step);
-			}else {
-				LOGE(LOG_TAG,"step_shake_start fail index: %d",running_step);
+			{
+				_step_shake_state tmp = step_shake_start();
+				if( tmp== SHAKE_STATE_START) {
+					LOGI(LOG_TAG,"step_shake_start done index: %d",running_step);
+				}else {
+					LOGE(LOG_TAG,"step_shake_start fail index: %d _step_shake_state: %d",running_step,tmp);
+				}
 			}
 			break;
 		case STEP_TYPE_WASHING:
-			if(step_washing_start()) {
+		{
+			_step_ws_state ws =step_washing_start();
+			if(ws == WS_STATE_START) {
 				LOGI(LOG_TAG,"step_washing_start done index: %d",running_step);
 			}else {
-				LOGE(LOG_TAG,"step_washing_start fail index: %d",running_step);
+				LOGE(LOG_TAG,"step_washing_start fail index: %d _step_ws_state: %d",running_step,ws);
 			}
+		}
 			break;
 		case STEP_TYPE_DRYING:
-			if(step_drying_start()) {
-				LOGI(LOG_TAG,"step_drying_start done index: %d",running_step);
-			}else {
-				LOGE(LOG_TAG,"step_drying_start fail index: %d",running_step);
+			{
+				_step_dy_state dy = step_drying_start();
+				if(dy == DY_STATE_START) {
+					LOGI(LOG_TAG,"step_drying_start done index: %d",running_step);
+				}else {
+					LOGE(LOG_TAG,"step_drying_start fail index: %d _step_dy_state:%d",running_step,dy);
+				}
 			}
 			break;
 		default:
@@ -93,15 +104,17 @@ void pg_process_loop(void) {
 				pgstate= PG_STATE_END;
 				break;
 			}
+			Dwin_switch_running_page(running_pg,running_step);
 			if(isMotor_atHome(&z_motor))
 			{
 				if(start_step()!= STEP_TYPE_NONE) {
-					pgstate= PG_STATE_RUNNING;
+
+						pgstate= PG_STATE_RUNNING;
 				}
 				else {
 					running_step++;
 				}
-			} else {
+			}else {
 				LOGW(LOG_TAG,"start program without Z at home");
 				mt_move_to_home(&z_motor);
 				pgstate= PG_STATE_WAIT_HOMEZ;
