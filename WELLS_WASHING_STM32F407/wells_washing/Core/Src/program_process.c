@@ -101,7 +101,7 @@ void pg_process_loop(void) {
 
 		case PG_STATE_START:
 			if(running_step == MAX_STEP_NUM){
-				pgstate= PG_STATE_END;
+				pgstate= PG_STATE_START_HOMEX;
 				break;
 			}
 			Dwin_switch_running_page(running_pg,running_step);
@@ -150,12 +150,23 @@ void pg_process_loop(void) {
 					{
 						LOGI(LOG_TAG,"drying step (%d) finish",running_step);
 //						running_step++;
-						pgstate = PG_STATE_END;
+						pgstate = PG_STATE_START_HOMEX;
 					}
 					break;
 				default:
 					LOGI(LOG_TAG,"Unknown step type");
 					break;
+			}
+			break;
+		case PG_STATE_START_HOMEX:
+			LOGW(LOG_TAG,"all steps done, return x to home");
+			mt_move_to_home(&x_motor);
+			pgstate= PG_STATE_WAIT_HOMEX;
+			break;
+		case PG_STATE_WAIT_HOMEX:
+			if(isMotor_atHome(&x_motor)){
+				LOGI(LOG_TAG,"return x to home done");
+				pgstate= PG_STATE_END;
 			}
 			break;
 		case PG_STATE_STOP:

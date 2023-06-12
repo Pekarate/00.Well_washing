@@ -18,6 +18,19 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim5;
 
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if(htim->Instance ==  htim2.Instance)
+	{
+		htim2.Instance->CNT = 0;
+		x_mt_stop();
+	} else if(htim->Instance ==  htim5.Instance)
+	{
+		htim5.Instance->CNT = 0;
+		z_mt_stop();
+	}
+}
 _motor_typedef x_motor;
 
 
@@ -59,9 +72,10 @@ void x_mt_start(){
 
 void x_mt_stop()
 {
+	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 	x_motor.command = CMD_IDLE;
 	x_motor.next_pos = x_motor.current_pos = htim2.Instance->CNT;
-	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+
 }
 
 
@@ -81,7 +95,7 @@ void x_step_mt_int(void){
 	x_motor.old_pos = x_motor.ud_time =0;
 	x_motor.home_achieve = 0;
 	x_motor.set_current_position = x_set_current_position;
-	HAL_TIM_Base_Start(&htim2);
+	HAL_TIM_Base_Start_IT(&htim2);
 }
 
 void step_mt_move_foward(_motor_typedef *step,uint32_t numstep){
@@ -218,9 +232,10 @@ void z_mt_start(){
 
 void z_mt_stop()
 {
+	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
 	z_motor.command = CMD_IDLE;
 	z_motor.next_pos = z_motor.current_pos = htim5.Instance->CNT;
-	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
+
 }
 
 void z_mt_move_to_pos(uint32_t pos){
@@ -238,7 +253,7 @@ void z_step_mt_int(void){
 	z_motor.current_pos= z_motor.next_pos = htim5.Instance->CNT = 0;
 	z_motor.old_pos = z_motor.ud_time =0;
 	z_motor.set_current_position = z_set_current_position;
-	HAL_TIM_Base_Start(&htim5);
+	HAL_TIM_Base_Start_IT(&htim5);
 }
 
 

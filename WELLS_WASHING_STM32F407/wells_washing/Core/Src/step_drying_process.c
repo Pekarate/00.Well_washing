@@ -14,6 +14,7 @@
 
 #if ENABLE_LOG_STEP_WASHING
 	#define LOG_TAG "DRY "
+	#define LOG_INFO "INFO "
 #else
 	#undef LOGI
 	#define LOGI(fmt, ...)
@@ -32,9 +33,8 @@ int step_drying_start()
 		LOGI(LOG_TAG,"--------------- drying step: %d of program : %d----------------",running_step,running_pg);
 		drying_step = (_def_drying_step *)&system_data.flash_data.Program_para[running_pg][running_step];
 		dy_state = DY_STATE_START;
-		return 1;
 	}
-	return 0;
+	return dy_state;
 }
 void heater_on()
 {
@@ -48,13 +48,13 @@ void heater_off()
 }
 void show_infor_drying_step(_def_drying_step dr_step)
 {
-	LOGI(LOG_TAG,"---------------INFOR_DRYING_STEP------------");
-	LOGI(LOG_TAG,"1:Move to Wells: %d",dr_step.wells);
-	LOGI(LOG_TAG,"2:hearter on : %d",dr_step.heater_on);
-	LOGI(LOG_TAG,"3:move z to bottom");
-	LOGI(LOG_TAG,"4:wait1 : %ds",dr_step.wait1);
-	LOGI(LOG_TAG,"5:hearter off : %d",dr_step.heater_off);
-	LOGI(LOG_TAG,"------------------------------------------");
+	LOGW(LOG_INFO,"---------------INFOR_DRYING_STEP INDEX %d------------",running_step);
+	LOGI(LOG_INFO,"1:Move to Wells: %d",dr_step.wells);
+	LOGI(LOG_INFO,"2:hearter on : %d",dr_step.heater_on);
+	LOGI(LOG_INFO,"3:move z to bottom");
+	LOGI(LOG_INFO,"4:wait1 : %ds",dr_step.wait1);
+	LOGI(LOG_INFO,"5:hearter off : %d",dr_step.heater_off);
+	LOGW(LOG_INFO,"------------------------------------------");
 }
 int step_drying_stop(void)
 {
@@ -88,30 +88,29 @@ int step_drying_process(void)
 			{
 				LOGI(LOG_TAG,"move z done");
 				old_dy_state = dy_state;
+				dy_state = DY_HEATER_ON; // Example transition to next state
 
-				if(drying_step->heater_on)
-				{
-					dy_state = DY_HEATER_ON; // Example transition to next state
-				}
-				else
-				{
-					LOGI(LOG_TAG,"skip heater on, wait : %ds",drying_step->wait1);
-			    	t_time = HAL_GetTick() +  (uint32_t)drying_step->wait1 * 1000;
-			    	dy_state = DY_STATE_WAIT; // Example transition to next state
-				}
 			}
 			break;
 	    case DY_HEATER_ON:
-	    	heater_on();
-	    	LOGI(LOG_TAG,"heater on, wait : %ds",drying_step->wait1);
+	    	if(drying_step->heater_on)
+			{
+	    		LOGI(LOG_TAG,"heater on, wait : %ds",drying_step->wait1);
+	    		heater_on();
+			}else {
+				LOGW(LOG_TAG,"skip heater on, wait : %ds",drying_step->wait1);
+			}
 	    	old_dy_state = dy_state;
 	    	t_time = HAL_GetTick() +  (uint32_t)drying_step->wait1 * 1000;
 	    	dy_state = DY_STATE_WAIT; // Example transition to next state
 	        break;
 	    case DY_HEATER_OFF:
-
-	    	LOGI(LOG_TAG,"heater off");
-	    	heater_off();
+	    	if(drying_step->heater_off) {
+				LOGI(LOG_TAG,"heater off");
+				heater_off();
+	    	} else {
+	    		LOGW(LOG_TAG,"skip heater off");
+	    	}
 	    	mt_set_target_position(&z_motor,0);
 	    	dy_state = DY_STATE_Z_TOP;
 	        break;
@@ -127,14 +126,7 @@ int step_drying_process(void)
 			{
 				switch (old_dy_state) {
 					case DY_HEATER_ON:
-						if(drying_step->heater_off) {
 							dy_state = DY_HEATER_OFF; // Example transition to next state
-						} else {
-							LOGI(LOG_TAG,"skip heater off");
-							mt_set_target_position(&z_motor,0);
-							dy_state = DY_STATE_Z_TOP;
-							break;
-						}
 						break;
 				    default:
 				        break;
@@ -142,8 +134,9 @@ int step_drying_process(void)
 			}
 	        break;
 	    case DY_STATE_Z_FINISH:
+	    	dy_state = DY_STATE_IDE;
 	    	return 1;
-	        old_dy_state = DY_STATE_Z_FINISH;
+
 	        break;
 	    default:
 	        break;

@@ -13,6 +13,7 @@
 
 #if ENABLE_LOG_STEP_WASHING
 	#define LOG_TAG "WASH "
+	#define LOG_INFO "INFO "
 #else
 	#undef LOGI
 	#undef LOGE
@@ -31,6 +32,9 @@ void start_fill_washing_solution(){
 }
 int is_washing_solution_full()
 {
+#if SIMULATOR_MOD
+	return 1;
+#endif
 	if(HAL_GPIO_ReadPin(WS_SOLUTION_FULL_GPIO_Port, WS_SOLUTION_FULL_Pin) == WS_SOLUTION_FULL_LEVEL)
 		return 1;
 	return 0;
@@ -47,6 +51,9 @@ void start_drain_washing_solution(){
 }
 int is_washing_solution_empty()
 {
+#if SIMULATOR_MOD
+	return 1;
+#endif
 	if(HAL_GPIO_ReadPin(WS_SOLUTION_EMPTY_GPIO_Port, WS_SOLUTION_EMPTY_Pin) == WS_SOLUTION_EMPTY_LEVEL)
 			return 1;
 	return 0;
@@ -74,16 +81,16 @@ int step_washing_stop(void){
 }
 void show_infor_washing_step(_def_washing_step ws_step)
 {
-	LOGI(LOG_TAG,"---------------INFOR_WASHING_STEP------------");
-	LOGI(LOG_TAG,"1:Move to Wells: %d",ws_step.wells);
-	LOGI(LOG_TAG,"2:wait1 : %ds",ws_step.wait1);
-	LOGI(LOG_TAG,"3:fill washing solution: %d \n4:move z to bottom",ws_step.fill);
-	LOGI(LOG_TAG,"5:wait2 : %ds",ws_step.wait2);
-	LOGI(LOG_TAG,"6:shake on : %ds",ws_step.shake);
-	LOGI(LOG_TAG,"7:wait4 : %ds",ws_step.wait4);
-	LOGI(LOG_TAG,"8:move z to top %d\n9:Drain washing solution",ws_step.drain);
-	LOGI(LOG_TAG,"10:wait5 : %ds",ws_step.wait5);
-	LOGI(LOG_TAG,"-------------------------------------------");
+	LOGW(LOG_INFO,"---------------INFOR_WASHING_STEP INDEX: %d------------",running_step);
+	LOGI(LOG_INFO,"1:Move to Wells: %d",ws_step.wells);
+	LOGI(LOG_INFO,"2:wait1 : %ds",ws_step.wait1);
+	LOGI(LOG_INFO,"3:fill washing solution: %d \n4:move z to bottom",ws_step.fill);
+	LOGI(LOG_INFO,"5:wait2 : %ds",ws_step.wait2);
+	LOGI(LOG_INFO,"6:shake on : %ds",ws_step.shake);
+	LOGI(LOG_INFO,"7:wait4 : %ds",ws_step.wait4);
+	LOGI(LOG_INFO,"8:move z to top %d\n9:Drain washing solution",ws_step.drain);
+	LOGI(LOG_INFO,"10:wait5 : %ds",ws_step.wait5);
+	LOGW(LOG_INFO,"-------------------------------------------");
 }
 
 int step_washing_process(void)
@@ -95,7 +102,7 @@ int step_washing_process(void)
 	            break;
 	        case WS_STATE_START:
 	        	show_infor_washing_step(*washing_step);
-	            LOGI(LOG_TAG,"move x to %lu",system_data.flash_data.Well_position[washing_step->wells-1]);
+	            LOGI(LOG_TAG,"move x well %d, pos %lu",washing_step->wells,system_data.flash_data.Well_position[washing_step->wells-1]);
             	mt_set_target_position(&x_motor, system_data.flash_data.Well_position[washing_step->wells-1]); // m
 	            ws_state = WS_STATE_MOVE_WELLS; // Example transition to next state
 	            break;

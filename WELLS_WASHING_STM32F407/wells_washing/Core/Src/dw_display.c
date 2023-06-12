@@ -64,9 +64,15 @@ void s_log_clear(void)
 }
 
 
-static inline void Dw_write(uint8_t *data,uint16_t len)
+static void Dw_write(uint8_t *data,uint16_t len)
 {
+	static uint32_t timesend = 0;
+	while(HAL_GetTick() <timesend)
+	{
+		__NOP();
+	}
 	uart_transmit_block(data, len, 1000);
+	timesend = HAL_GetTick()+10;
 }
 void dw_log_deamon(void)
 {
@@ -152,6 +158,7 @@ void Dwin_switch_page(int page_index)
 }
 void Dwin_switch_running_page(uint8_t pg,uint8_t stepnumber)
 {
+	dw_update_setup_page(pg,stepnumber);
 	switch (system_data.flash_data.Program_para[pg][stepnumber].type) {
 		case STEP_TYPE_SHAKE:
 			Dwin_switch_page(PAGE_RUNNING_STEP_SHAKE);
@@ -168,7 +175,9 @@ void Dwin_switch_running_page(uint8_t pg,uint8_t stepnumber)
 		default:
 			break;
 	}
-	dw_update_setup_page(pg,stepnumber);
+	__NOP();
+	__NOP();
+
 }
 
 void Dwin_init(void)

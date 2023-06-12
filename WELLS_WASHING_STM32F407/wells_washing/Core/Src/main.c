@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "define.h"
 #include "data.h"
 #include "uart.h"
 #include "dw_display.h"
@@ -84,16 +85,18 @@ typedef struct
 	uint8_t size;
 	uint8_t data[100];
 }_debug_frame;
-#define LOG_FRAME 50
+#define LOG_FRAME 100
 _debug_frame debuglog[LOG_FRAME];
 uint8_t debug_cnt = 0;
 static uint8_t out_index = 0;
 static uint8_t in_index = 0;
+volatile uint8_t usb_transmitdone = 1;
 void debug_process()
 {
 
-	if(debug_cnt)
+	if(debug_cnt && usb_transmitdone)
 	{
+		usb_transmitdone = 0;
 		if(CDC_Transmit_FS(debuglog[out_index].data,debuglog[out_index].size)==USBD_OK)
 		{
 			out_index++;
@@ -194,9 +197,15 @@ int main(void)
 //  HAL_TIM_Base_Start(&htim3);
   x_step_mt_int();
   z_step_mt_int();
+#if !SIMULATOR_MOD
   z_motor_boot_start();
   x_motor_boot_start();
-
+#else
+  x_motor.home_achieve = 1;
+  x_motor.is_home = 1;
+  z_motor.home_achieve = 1;
+  z_motor.is_home = 1;
+#endif
   printf("code started \n");
   HAL_Delay(100);
   dwin_log_visiable(0);
@@ -206,7 +215,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   usercommand =1;
-    uint32_t ti;
+//    uint32_t ti;
   while (1)
   {
 	  dwin_log_timeout();
@@ -394,7 +403,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 30;
+  htim1.Init.Prescaler = 20;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 999;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -514,7 +523,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 30;
+  htim3.Init.Prescaler = 20;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 999;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

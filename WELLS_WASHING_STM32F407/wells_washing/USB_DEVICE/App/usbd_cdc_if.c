@@ -49,7 +49,7 @@
   */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
-
+extern volatile uint8_t usb_transmitdone;
 /* USER CODE END PRIVATE_TYPES */
 
 /**
@@ -304,9 +304,11 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
   * @param  Len: Number of data received (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
+
 static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 {
   uint8_t result = USBD_OK;
+  usb_transmitdone =1;
   /* USER CODE BEGIN 13 */
   UNUSED(Buf);
   UNUSED(Len);

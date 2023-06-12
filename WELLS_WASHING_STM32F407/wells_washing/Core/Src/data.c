@@ -15,7 +15,7 @@
 _system_data system_data;
 
 const _flash_data flash_defaul = {
-											.Z_bottom_pos = 27000, //thiss iss z bottom possition
+											.Z_bottom_pos = 2000, //thiss iss z bottom possition
 											.Well_position ={100,400,800,1400,1600,2000,2400,2800,3200,3600,4000,4400,4800,5200,5600}, // you not set position for wells10
 											.Program_para ={
 														{ //program 1

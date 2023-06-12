@@ -14,6 +14,7 @@
 
 #ifdef ENABLE_LOG_STEP_SHAKEING
 	#define LOG_TAG "SHAKE"
+	#define LOG_INFO "INFO "
 #endif
 
 static uint32_t t_time = 0;
@@ -41,16 +42,16 @@ int step_shake_stop(void)
 //return 1 mean step done
 void show_infor_shake_step(_def_shake_step shake_step)
 {
-	LOGI(LOG_TAG,"---------------INFOR_SHAKE_STEP------------");
-	LOGI(LOG_TAG,"1:Move to Wells: %d",shake_step.wells);
-	LOGI(LOG_TAG,"2:wait1 : %ds",shake_step.wait1);
-	LOGI(LOG_TAG,"3:move z to bottom");
-	LOGI(LOG_TAG,"4:wait2 : %ds",shake_step.wait2);
-	LOGI(LOG_TAG,"5:shake on : %ds",shake_step.shake);
-	LOGI(LOG_TAG,"6:wait4 : %ds",shake_step.wait4);
-	LOGI(LOG_TAG,"7:move z to top");
-	LOGI(LOG_TAG,"8:wait5 : %ds",shake_step.wait5);
-	LOGI(LOG_TAG,"------------------------------------------");
+	LOGW(LOG_INFO,"---------------INFOR_SHAKE_STEP: %d------------",running_step);
+	LOGI(LOG_INFO,"1:Move to Wells: %d",shake_step.wells);
+	LOGI(LOG_INFO,"2:wait1 : %ds",shake_step.wait1);
+	LOGI(LOG_INFO,"3:move z to bottom");
+	LOGI(LOG_INFO,"4:wait2 : %ds",shake_step.wait2);
+	LOGI(LOG_INFO,"5:shake on : %ds",shake_step.shake);
+	LOGI(LOG_INFO,"6:wait4 : %ds",shake_step.wait4);
+	LOGI(LOG_INFO,"7:move z to top");
+	LOGI(LOG_INFO,"8:wait5 : %ds",shake_step.wait5);
+	LOGW(LOG_INFO,"------------------------------------------");
 }
 int step_shake_process(void){
 	static _step_shake_state old_state = SHAKE_STATE_IDE;
