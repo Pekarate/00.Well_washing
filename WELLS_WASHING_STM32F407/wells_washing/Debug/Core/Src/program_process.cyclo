@@ -1,4 +1,0 @@
-program_process.c:32:5:pg_start	2
-program_process.c:44:5:pg_stop	1
-program_process.c:49:12:start_step	8
-program_process.c:84:6:pg_process_loop	14

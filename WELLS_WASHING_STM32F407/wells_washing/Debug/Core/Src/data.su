@@ -1,7 +1,0 @@
-../Core/Src/data.c:74:5:is_data_init	4	static
-../Core/Src/data.c:83:6:dt_calculator_pg_stepnumber	16	static
-../Core/Src/data.c:97:6:dt_calculator_pg_total_time	16	static
-../Core/Src/data.c:114:5:is_step_differrent	16	static
-../Core/Src/data.c:118:6:dt_Modify_step	32	static
-../Core/Src/data.c:127:6:dt_system_data_init	8	static,ignoring_inline_asm
-../Core/Src/data.c:142:19:dt_store_system_data	16	static

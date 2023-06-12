@@ -1,7 +1,0 @@
-uart.c:25:6:HAL_UART_TxCpltCallback	4
-uart.c:38:6:uart_transmit	4
-uart.c:57:6:uart_dma_start	1
-uart.c:61:6:uart_dma_stop	1
-uart.c:65:12:dw_process_rx_buffer	1
-uart.c:69:6:uart_process	4
-uart.c:88:19:uart_transmit_block	1
