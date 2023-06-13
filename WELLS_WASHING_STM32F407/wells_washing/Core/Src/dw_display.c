@@ -246,14 +246,14 @@ void dwin_update_step(uint8_t *data){
 	if(step.wells> NUM_MAX_WELL)
 			return;
 	switch (step.wells) {
-		case 1:
-			step.type = STEP_TYPE_SHAKE;
+		case (NUM_MAX_WELL-1):
+			step.type = STEP_TYPE_WASHING;
 			break;
 		case NUM_MAX_WELL:
 			step.type = STEP_TYPE_DRYING;
 			break;
 		default:
-			step.type = STEP_TYPE_WASHING;
+			step.type = STEP_TYPE_SHAKE;
 			break;
 	}
 	for(int i=0;i<7;i++){
@@ -285,13 +285,14 @@ void dwin_change_target_well(uint8_t well){
 		return;
 	uint8_t target_page = PAGE_SETUP_STEP_SHAKE;
 	switch (well) {
-		case 1:
+		case (NUM_MAX_WELL-1):
+			target_page = PAGE_SETUP_STEP_WASHING;
 			break;
 		case NUM_MAX_WELL:
 			target_page = PAGE_SETUP_STEP_DRYING;
 			break;
 		default:
-			target_page = PAGE_SETUP_STEP_WASHING;
+			target_page = PAGE_SETUP_STEP_SHAKE;
 			break;
 	}
 	Dwin_switch_page(target_page);
