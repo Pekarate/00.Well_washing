@@ -10,7 +10,7 @@
 #include "main.h"
 #include "stdint.h"
 
-#define MAX_WELLS_NUM 	20
+
 #define MAX_PROGRAM_NUM 10
 #define MAX_STEP_NUM 	25
 #define FACTORY_CODE 	0x2222
@@ -56,7 +56,7 @@ typedef struct{
 }_def_drying_step;
 typedef struct{
 	uint32_t Z_bottom_pos;
-	uint32_t Well_position[MAX_WELLS_NUM];
+	uint32_t Well_position[NUM_MAX_WELL];
 	_def_step Program_para[MAX_PROGRAM_NUM][MAX_STEP_NUM];
 	uint16_t factory_code;
 
