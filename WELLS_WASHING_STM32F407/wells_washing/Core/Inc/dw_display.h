@@ -10,41 +10,41 @@
 
 #include "main.h"
 
-#define PAGE_SETUP_STEP_NONE 	2
-#define PAGE_SETUP_USER_CTL 	3
-#define PAGE_SETUP_STEP_SHAKE 	6
-#define PAGE_SETUP_STEP_WASHING 7
-#define PAGE_SETUP_STEP_DRYING 	8
+#define PAGE_SETUP_STEP_NONE 		2
+#define PAGE_SETUP_USER_CTL 		3
+#define PAGE_SETUP_STEP_SHAKE 		6
+#define PAGE_SETUP_STEP_WASHING 	7
+#define PAGE_SETUP_STEP_DRYING 		8
 
 #define PAGE_RUNNING_STEP_SHAKE 	9
 #define PAGE_RUNNING_STEP_WASHING 	10
 #define PAGE_RUNNING_STEP_DRYING 	11
 
-#define PAGE_RUNNING_END_PG 	13
+#define PAGE_RUNNING_END_PG 		13
 
-#define PAGE_MANUAL_CONTROL     5
-#define PAGE_RUNNING 			6
+#define PAGE_MANUAL_CONTROL     	5
+#define PAGE_RUNNING 				6
 
-#define VP_LOG_ADDRESS			0x2000
+#define VP_LOG_ADDRESS				0x2000
 
-#define VP_SETUP_PARA			0x3000
-#define VP_X_STEP_MOTOR 		0x2200
-#define VP_Z_STEP_MOTOR 		0x2202
+#define VP_SETUP_PARA				0x3000
+#define VP_X_STEP_MOTOR 			0x2200
+#define VP_Z_STEP_MOTOR 			0x2202
 
-#define VP_TEXT_LOG 			0x3800
+#define VP_TEXT_LOG 				0x3800
 
 
-#define BT_SETUP_CODE 			0x3000
-#define BT_SWICH_SETUP_PAGE 	0x3001
+#define BT_SETUP_CODE 				0x3000
+#define BT_SWICH_SETUP_PAGE 		0x3001
 
-#define BT_MOVE_X_FOWARD 		0x2205
-#define BT_MOVE_X_BACKWARD 		0x2204
+#define BT_MOVE_X_FOWARD 			0x2205
+#define BT_MOVE_X_BACKWARD 			0x2204
 
-#define BT_MOVE_Z_FOWARD 		0x2305
-#define BT_MOVE_Z_BACKWARD 		0x2304
+#define BT_MOVE_Z_FOWARD 			0x2305
+#define BT_MOVE_Z_BACKWARD 			0x2304
 
-#define BT_X_HOME		 		0x2500
-#define BT_Z_HOME		 		0x2501
+#define BT_X_HOME		 			0x2500
+#define BT_Z_HOME		 			0x2501
 
 
 

@@ -12,7 +12,7 @@
 #include "stdint.h"
 #include "motor.h"
 
-#define STEP_LOSS 2
+
 
 typedef enum
 {
