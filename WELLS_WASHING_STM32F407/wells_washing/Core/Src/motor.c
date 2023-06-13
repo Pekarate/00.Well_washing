@@ -325,11 +325,14 @@ void x_motor_boot_start(void)
 {
 	if(!HAL_GPIO_ReadPin(X_HOME_SWITCH_GPIO_Port, X_HOME_SWITCH_Pin))
 	  {
+		  printf("start x at home position, move x to 100 and go home");
 		  step_mt_move_foward(&x_motor,100);
 		  x_mt_set_dir();
 		  x_mt_start();
 		  while(htim2.Instance->CNT < 100);
 		  x_mt_stop();
+	  } else {
+		 printf("start x not at home position, move x go home");
 	  }
 	  mt_move_to_home(&x_motor);
 	  while(1){  // home X
@@ -344,11 +347,14 @@ void z_motor_boot_start(void)
 {
 	if(!HAL_GPIO_ReadPin(Z_HOME_SWITCH_GPIO_Port, Z_HOME_SWITCH_Pin))
 	  {
+		 printf("start Z at home position, move Z to 100 and go home");
 		  step_mt_move_foward(&z_motor,100);
 		  z_mt_set_dir();
 		  z_mt_start();
 		  while(htim5.Instance->CNT < 100);
 		  z_mt_stop();
+	  } else {
+		 printf("start Z not at home position, move x go home");
 	  }
 	  mt_move_to_home(&z_motor);
 	  while(1){  // home Z
