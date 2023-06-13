@@ -20,43 +20,71 @@
 	#define LOGI(LOG_TAG,fmt, ...)
 	#define LOGE(LOG_TAG,fmt, ...)
 #endif
+
 _def_washing_step *washing_step;
 extern uint8_t running_pg;
 extern uint8_t running_step;
 _step_ws_state ws_state = WS_STATE_IDE;
 _step_ws_state old_ws_state = WS_STATE_IDE;
 static uint32_t ws_time = 0;
+static uint32_t fill_drain_timout = MAX_UINT32_T;
+
+void set_timeout_for_fill_drain(uint32_t nsec){
+	fill_drain_timout = HAL_GetTick() + nsec*1000;
+}
+
 void start_fill_washing_solution(){
 	LOGI(LOG_TAG,"start fill washing solution");
 	HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, PUMP1_ON_LEVEL);
+	set_timeout_for_fill_drain(TIME_FILL_WS_SL);
 }
 int is_washing_solution_full()
 {
 #if SIMULATOR_MOD
 	return 1;
 #endif
+#if 0
 	if(HAL_GPIO_ReadPin(WS_SOLUTION_FULL_GPIO_Port, WS_SOLUTION_FULL_Pin) == WS_SOLUTION_FULL_LEVEL)
 		return 1;
 	return 0;
+#else
+	if(HAL_GetTick() > fill_drain_timout)
+	{
+		return 1;
+	}
+	return 0;
+#endif
 }
 void stop_fill_washing_solution(){
 	LOGI(LOG_TAG,"stop fill washing solution");
 	HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, PUMP1_OFF_LEVEL);
+
 }
 
 
 void start_drain_washing_solution(){
-	LOGI(LOG_TAG,"start drain fill solution ");
+	LOGI(LOG_TAG,"start drain solution on: %ds",TIME_DRAIN_WS_SL);
 	HAL_GPIO_WritePin(PUMP2_GPIO_Port, PUMP2_Pin, PUMP2_ON_LEVEL);
+	set_timeout_for_fill_drain(TIME_DRAIN_WS_SL);
 }
+
+
 int is_washing_solution_empty()
 {
 #if SIMULATOR_MOD
 	return 1;
 #endif
+#if 0
 	if(HAL_GPIO_ReadPin(WS_SOLUTION_EMPTY_GPIO_Port, WS_SOLUTION_EMPTY_Pin) == WS_SOLUTION_EMPTY_LEVEL)
 			return 1;
 	return 0;
+#else
+	if(HAL_GetTick() > fill_drain_timout)
+	{
+		return 1;
+	}
+	return 0;
+#endif
 }
 void stop_drain_washing_solution(){
 
