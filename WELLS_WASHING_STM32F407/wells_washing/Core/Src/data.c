@@ -22,7 +22,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -31,7 +31,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -40,7 +40,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -49,7 +49,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -58,7 +58,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -67,7 +67,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -76,7 +76,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -85,7 +85,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -94,7 +94,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
@@ -103,7 +103,7 @@ const _flash_data flash_defaul = {
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
 																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}, //step4
+																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
 																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
 																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
 
