@@ -28,6 +28,7 @@
 #define VP_LOG_ADDRESS				0x2000
 
 #define VP_SETUP_PARA				0x3000
+#define VP_WELLS_ADDR				0x3003
 #define VP_X_STEP_MOTOR 			0x2200
 #define VP_Z_STEP_MOTOR 			0x2202
 
