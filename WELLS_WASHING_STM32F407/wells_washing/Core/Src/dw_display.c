@@ -283,9 +283,12 @@ void dwin_stop_program(void){
 void dwin_change_target_well(uint8_t well){
 	if(well> NUM_MAX_WELL || well == 0 )
 	{
-		well = NUM_MAX_WELL;
-		uint16_t wells = well;
-		Dwin_Write_VP(VP_WELLS_ADDR, &wells, 1);
+//		well = NUM_MAX_WELL;
+//		uint16_t wells = well;
+//		Dwin_Write_VP(VP_WELLS_ADDR, &wells, 1);
+		LOGE(LOG_TAG,"input target well error: %d",well);
+		Dwin_switch_page(PAGE_INPUT_WELL_ERROR);
+		return;
 	}
 	uint8_t target_page = PAGE_SETUP_STEP_SHAKE;
 	switch (well) {

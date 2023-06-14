@@ -21,6 +21,7 @@
 #define PAGE_RUNNING_STEP_DRYING 	11
 
 #define PAGE_RUNNING_END_PG 		13
+#define PAGE_INPUT_WELL_ERROR	 	15
 
 #define PAGE_MANUAL_CONTROL     	5
 #define PAGE_RUNNING 				6
