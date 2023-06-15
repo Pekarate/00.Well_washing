@@ -127,12 +127,12 @@ int step_shake_process(void){
 //	                shake_state = SHAKE_STATE_SHAKE;
 	                break;
 	            case SHAKE_STATE_SHAKE:
-	                if(Mt_get_current_prosition(z_motor) == system_data.flash_data.Z_bottom_pos - 1000)
+	                if(Mt_get_current_prosition(z_motor) == system_data.flash_data.Z_bottom_pos - SHAKING_DISTANCE )
 	            	{
 	                	mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos);
 	            	}
 	                if(Mt_get_current_prosition(z_motor) == system_data.flash_data.Z_bottom_pos)
-					{
+			{
 	                	if(HAL_GetTick() > t_time)
 	                	{
 	                		LOGI(LOG_TAG,"shake done, wait4 : %d",shake_step->wait4);
@@ -142,9 +142,9 @@ int step_shake_process(void){
 	                	}
 	                	else
 	                	{
-	                		mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos-1000);
+	                		mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos-SHAKING_DISTANCE);
 	                	}
-					}
+			}
 	                break;
 	            case SHAKE_STATE_Z_TOP:
 	            	if(Mt_get_current_prosition(z_motor) == 0)
