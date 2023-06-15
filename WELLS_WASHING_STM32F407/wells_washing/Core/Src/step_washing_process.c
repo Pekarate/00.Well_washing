@@ -164,7 +164,7 @@ int step_washing_process(void)
 				}
 	            break;
 	        case WS_STATE_SHAKE:
-                if(Mt_get_current_prosition(z_motor) == system_data.flash_data.Z_bottom_pos - 1000)
+                if(Mt_get_current_prosition(z_motor) == system_data.flash_data.Z_bottom_pos - SHAKING_DISTANCE)
             	{
                 	mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos);
             	}
@@ -179,7 +179,7 @@ int step_washing_process(void)
                 	}
                 	else
                 	{
-                		mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos-1000);
+                		mt_set_target_position(&z_motor,system_data.flash_data.Z_bottom_pos-SHAKING_DISTANCE);
                 	}
 				}
 	            break;
