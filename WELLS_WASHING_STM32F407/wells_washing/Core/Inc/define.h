@@ -28,6 +28,8 @@
 #define TIME_FILL_WS_SL				2	//time for fill washing solution
 #define TIME_DRAIN_WS_SL			2	//time for drain washing solution
 
+#define SHAKING_DISTANCE 		 	1000
+
 #define PULSES_PER_MM 		 		7
 
 
