@@ -56,6 +56,9 @@
 #define BT_START_PROCEED		0x4002
 
 #define BT_SETUP_TAR_GET_WELLS 	0x3003
+#define BT_SETUP_FILL_ONOFF		0x3005
+#define BT_SETUP_DRAIN_ONOFF	 0x3009
+#define BT_SETUP_HEATER_ONOFF	 0x3004
 
 #define BT_SWICH_SETUP_APPLY 0x3A00
 #define BT_SWICH_SETUP_EXIT 0x3101
@@ -70,6 +73,8 @@
 #define LOG_INFOR_COLOR			0x1F72
 #define LOG_WARNING_COLOR		0xF5C9
 #define LOG_ERROR_COLOR			0xF800
+#define DWIN_COLOR_RED			0xF800
+#define DWIN_COLOR_BLACK			0x0000
 
 typedef enum{
 	LOG_INFOR =LOG_INFOR_COLOR,
@@ -91,5 +96,5 @@ void dwin_log_change_color(uint16_t color);
 void dwin_log_visiable(uint16_t visible);
 void dwin_log_text(_Log_type type,char *data, int len,uint32_t time);
 void dwin_log_timeout(void);
-
+void dwin_change_color_sp(uint16_t sp,uint16_t color);
 #endif /* INC_DW_DISPLAY_H_ */

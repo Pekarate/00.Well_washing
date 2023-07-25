@@ -218,6 +218,15 @@ int main(void)
 //    uint32_t ti;
   while (1)
   {
+#if SIMULATOR_MOD    //enter download HMI FW
+	  if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin))
+	  {
+		  while(1){
+			  HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+			  HAL_Delay(50);
+		  }
+	  }
+#endif
 	  dwin_log_timeout();
 	  debug_process();
 //	  if(HAL_GetTick()> ti)

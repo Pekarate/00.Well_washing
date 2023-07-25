@@ -9,7 +9,7 @@
 #define INC_DEFINE_H_
 
 #define SIMULATOR_MOD 0
-
+#define HMI_START_PAGE 0
 
 #define NUM_MAX_WELL		 		15
 

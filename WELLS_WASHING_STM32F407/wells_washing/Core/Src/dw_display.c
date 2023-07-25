@@ -184,7 +184,7 @@ void Dwin_init(void)
 {
 	Dwin_reset();
 	HAL_Delay(1000);
-//	Dwin_switch_page(05);
+	Dwin_switch_page(HMI_START_PAGE);
 	memset(&s_log,0,sizeof(s_log));
 }
 
@@ -225,9 +225,33 @@ void show_setup_page(uint8_t pg,uint8_t stepnumber){
 	switch(system_data.flash_data.Program_para[pg][stepnumber].type){
 		case (STEP_TYPE_WASHING):
 				Dwin_switch_page(PAGE_SETUP_STEP_WASHING);
+				if(system_data.flash_data.Program_para[pg][stepnumber].timing[1]) {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
+				}
+				if(system_data.flash_data.Program_para[pg][stepnumber].timing[5]) {
+					dwin_change_color_sp(0x7020,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7030,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7020,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7030,DWIN_COLOR_BLACK);
+				}
 				break;
 		case (STEP_TYPE_DRYING):
 				Dwin_switch_page(PAGE_SETUP_STEP_DRYING);
+				if(system_data.flash_data.Program_para[pg][stepnumber].timing[0]) {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
+				}
 				break;
 		default:
 				Dwin_switch_page(PAGE_SETUP_STEP_SHAKE);
@@ -327,6 +351,29 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 				value = (uint16_t)data[7]*256+data[8];
 				dwin_change_target_well(value);
 				break;
+		case BT_SETUP_FILL_ONOFF:
+		case BT_SETUP_HEATER_ONOFF:
+				value = (uint16_t)data[7]*256+data[8];
+				if(value) {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
+				}
+				break;
+		case BT_SETUP_DRAIN_ONOFF:
+				value = (uint16_t)data[7]*256+data[8];
+				if(value) {
+					dwin_change_color_sp(0x7020,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7030,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7020,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7030,DWIN_COLOR_BLACK);
+				}
+				break;
 		case BT_SWICH_SETUP_PAGE:
 				current_step_setup = value = data[8];
 				show_setup_page(current_pg_setup-1,value-1);
@@ -407,6 +454,11 @@ int dw_update_steper_positon(void){
 void dwin_log_change_color(uint16_t color){
 	Dwin_Write_VP(LOG_COLOR_ADDRESS, &color, 1);
 }
+
+void dwin_change_color_sp(uint16_t sp,uint16_t color){
+	Dwin_Write_VP(sp+3, &color, 1);
+}
+
 
 void dwin_log_change_len(uint16_t len){
 	static uint16_t oldlen = 200;

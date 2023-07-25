@@ -170,6 +170,20 @@ void dt_Modify_step(uint8_t pg,uint8_t stepindex ,_def_step step)
 	}
 }
 
+int dt_get_well_num(uint8_t pg,uint8_t stepindex)
+{
+	if(pg < MAX_PROGRAM_NUM && stepindex < MAX_STEP_NUM)
+		return system_data.flash_data.Program_para[pg][stepindex].wells;
+	return 0;
+}
+
+int dt_set_well_num(uint8_t pg,uint8_t stepindex,int wellnum)
+{
+	if(pg < MAX_PROGRAM_NUM && stepindex < MAX_STEP_NUM)
+		return system_data.flash_data.Program_para[pg][stepindex].wells = wellnum;
+	return 0;
+}
+
 void dt_system_data_init(void)
 {
 	read_flash((uint8_t *)&system_data.flash_data, sizeof(_flash_data), FLASH_START_ADDRESS);
