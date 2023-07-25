@@ -45,10 +45,9 @@ typedef struct{
 typedef struct{
 	uint8_t type;
 	uint8_t wells;
-	uint16_t heater_on;
+	uint16_t heater_on_off;
 	uint16_t wait1;
-	uint16_t heater_off;
-	uint16_t reserve[4];
+	uint16_t reserve[5];
 }_def_drying_step;
 typedef struct{
 	uint32_t Z_bottom_pos;

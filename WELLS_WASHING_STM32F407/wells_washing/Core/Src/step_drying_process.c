@@ -50,10 +50,10 @@ void show_infor_drying_step(_def_drying_step dr_step)
 {
 	LOGW(LOG_INFO,"---------------INFOR_DRYING_STEP INDEX %d------------",running_step);
 	LOGI(LOG_INFO,"1:Move to Wells: %d",dr_step.wells);
-	LOGI(LOG_INFO,"2:hearter on : %d",dr_step.heater_on);
+	LOGI(LOG_INFO,"2:hearter on : %d",dr_step.heater_on_off);
 	LOGI(LOG_INFO,"3:move z to bottom");
 	LOGI(LOG_INFO,"4:wait1 : %ds",dr_step.wait1);
-	LOGI(LOG_INFO,"5:hearter off : %d",dr_step.heater_off);
+	LOGI(LOG_INFO,"5:hearter off : %d",dr_step.heater_on_off);
 	LOGW(LOG_INFO,"------------------------------------------");
 }
 int step_drying_stop(void)
@@ -93,7 +93,7 @@ int step_drying_process(void)
 			}
 			break;
 	    case DY_HEATER_ON:
-	    	if(drying_step->heater_on)
+	    	if(drying_step->heater_on_off)
 			{
 	    		LOGI(LOG_TAG,"heater on, wait : %ds",drying_step->wait1);
 	    		heater_on();
@@ -105,7 +105,7 @@ int step_drying_process(void)
 	    	dy_state = DY_STATE_WAIT; // Example transition to next state
 	        break;
 	    case DY_HEATER_OFF:
-	    	if(drying_step->heater_off) {
+	    	if(drying_step->heater_on_off) {
 				LOGI(LOG_TAG,"heater off");
 				heater_off();
 	    	} else {
