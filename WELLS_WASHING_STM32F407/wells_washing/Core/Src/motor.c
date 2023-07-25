@@ -18,6 +18,8 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim5;
 
+#define Z_HOME_SWICH_OPEN	 (HAL_GPIO_ReadPin(Z_HOME_SWITCH_GPIO_Port, Z_HOME_SWITCH_Pin))
+#define Z_HOME_SWICH_CLOSE	 (!HAL_GPIO_ReadPin(Z_HOME_SWITCH_GPIO_Port, Z_HOME_SWITCH_Pin))
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -309,7 +311,12 @@ void z_step_motor_process(void){
 				}
 			} else {
 				if(z_motor.current_pos <= z_motor.next_pos){
-					z_motor.state = MT_STATE_STTOP;
+					if((z_motor.next_pos == 0) && Z_HOME_SWICH_OPEN ) //move until home switch enable
+					{
+						z_set_current_position(10);
+					} else {
+						z_motor.state = MT_STATE_STTOP;
+					}
 				}
 			}
 			break;
