@@ -192,7 +192,7 @@ int main(void)
 //  HAL_FLASH_Lock();
   Dwin_init();
   dt_system_data_init();
-  uart_dma_start();
+
 
 //  HAL_TIM_Base_Start(&htim3);
   x_step_mt_int();
@@ -208,6 +208,7 @@ int main(void)
 #endif
   printf("code started \n");
   HAL_Delay(100);
+  uart_dma_start();
   dwin_log_visiable(0);
 
   /* USER CODE END 2 */
