@@ -16,98 +16,35 @@ _system_data system_data;
 
 const _flash_data flash_defaul = {
 											.Z_bottom_pos = 2000, //thiss iss z bottom possition
-											.Well_position ={100,400,800,1400,1600,2000,2400,2800,3200,3600,4000,4400,4800,5200,5600}, // you not set position for wells10
+											.Well_position ={100,1000,2000,3000,4000,5000}, // you not set position for wells10
 											.Program_para ={
 														{ //program 2
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
+																{.type = 1,.wells = 2,.timing = {5,8,1,6,7}}, //step2
+																{.type = 1,.wells = 3,.timing = {5,9,6,5,7}}, //step3
+																{.type = 1,.wells = 4,.timing = {5,3,7,1,8}}, //step4
+																{.type = 2,.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
+																{.type = 3,.wells = 6,.timing = {1,15,1}}, //step6
 
 														},
 														{ //program 2
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
+																{.type = 1,.wells = 2,.timing = {5,8,1,6,7}}, //step2
+																{.type = 1,.wells = 3,.timing = {5,9,6,5,7}}, //step3
+																{.type = 1,.wells = 4,.timing = {5,3,7,1,8}}, //step4
+																{.type = 2,.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
+																{.type = 3,.wells = 6,.timing = {1,15,1}}, //step6
 
 														},
 														{ //program 3
 																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
+																{.type = 1,.wells = 2,.timing = {5,8,1,6,7}}, //step2
+																{.type = 1,.wells = 3,.timing = {5,9,6,5,7}}, //step3
+																{.type = 1,.wells = 4,.timing = {5,3,7,1,8}}, //step4
+																{.type = 2,.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
+																{.type = 3,.wells = 6,.timing = {1,15,1}}, //step6
 
 														},
-														{ //program 4
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														},
-														{ //program 5
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														},
-														{ //program 6
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														},
-														{ //program 7
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														},
-														{ //program 8
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														},
-														{ //program 9
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														},
-														{ //program 10
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 5,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 9,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 13,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 14,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 15,.timing = {1,15,1}}, //step6
-
-														}
 
 													},
 									.factory_code = FACTORY_CODE

@@ -11,7 +11,7 @@
 #define SIMULATOR_MOD 0
 #define HMI_START_PAGE 0
 
-#define NUM_MAX_WELL		 		15
+#define NUM_MAX_WELL		 		6
 
 #define PUMP1_ON_LEVEL 				1
 #define PUMP1_OFF_LEVEL 			0
@@ -35,7 +35,7 @@
 
 #define MAX_PROGRAM_NUM 10
 #define MAX_STEP_NUM 	25
-#define FACTORY_CODE 	0x2222
+#define FACTORY_CODE 	0x3333
 
 #define FLASH_START_ADDRESS  0x08060000
 
