@@ -19,7 +19,6 @@ typedef struct{
 }_def_step;
 
 typedef struct{
-	uint8_t type;
 	uint8_t wells;
 	uint16_t wait1;
 	uint16_t wait2;
@@ -30,7 +29,6 @@ typedef struct{
 }_def_shake_step;
 
 typedef struct{
-	uint8_t type;
 	uint8_t wells;
 	uint16_t wait1;
 	uint16_t fill;
@@ -42,7 +40,6 @@ typedef struct{
 }_def_washing_step;
 
 typedef struct{
-	uint8_t type;
 	uint8_t wells;
 	uint16_t heater_on_off;
 	uint16_t wait1;

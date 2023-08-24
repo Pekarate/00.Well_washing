@@ -18,7 +18,7 @@ const _flash_data flash_defaul = {
 											.Z_bottom_pos = 2000, //thiss iss z bottom possition
 											.Well_position ={100,1000,2000,3000,4000,5000}, // you not set position for wells10
 											.Program_para ={
-														{ //program 2
+														{ //program 1
 																{.wells = 1,.timing = {2,2,5,5,8}}, //step1
 																{.wells = 2,.timing = {5,8,1,6,7}}, //step2
 																{.wells = 3,.timing = {5,9,6,5,7}}, //step3

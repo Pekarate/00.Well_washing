@@ -25,6 +25,7 @@
 
 uint8_t	current_rx_index = 0;
 uint8_t *dw_rx_buf[10] = {0};
+uint8_t old_setup_page =0;
 
 int Dwin_Write_VP_String(uint16_t Addr,char *data,uint16_t slen);
 int dw_update_setup_page(uint8_t pg,uint8_t stepnumber);
@@ -152,6 +153,8 @@ int Dwin_read_VP(uint16_t Addr,uint16_t *data,uint16_t len)
 }
 void Dwin_switch_page(int page_index)
 {
+	if(page_index != PAGE_INPUT_WELL_ERROR )
+		old_setup_page = page_index;
 	uint16_t Buf[2] = {0x5A01,00};
 	Buf[1] = page_index;
 	Dwin_Write_VP(0X0084,Buf,2);
@@ -315,6 +318,23 @@ void dwin_change_target_well(uint8_t well){
 	}
 	Dwin_switch_page(target_page);
 }
+
+void dw_return_previous_page(void)
+{
+	uint16_t well_tmp=1;
+	switch (old_setup_page) {
+		case PAGE_SETUP_STEP_DRYING:
+			well_tmp = NUM_MAX_WELL;
+			break;
+		case PAGE_SETUP_STEP_WASHING:
+			well_tmp = NUM_MAX_WELL -1;
+			break;
+		default:
+			break;
+	}
+	Dwin_Write_VP(VP_WELLS_ADDR,&well_tmp,1);
+	Dwin_switch_page(old_setup_page);
+}
 static uint8_t current_pg_setup;
 static uint8_t current_step_setup;
 int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
@@ -405,6 +425,9 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 				{
 					show_user_page();
 				}
+				break;
+		case BT_ERROR_WELL_BACK:
+				dw_return_previous_page();
 				break;
 
 		default:
