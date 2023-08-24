@@ -29,6 +29,7 @@ uint8_t old_setup_page =0;
 
 int Dwin_Write_VP_String(uint16_t Addr,char *data,uint16_t slen);
 int dw_update_setup_page(uint8_t pg,uint8_t stepnumber);
+void Update_color(uint8_t pg,uint8_t index_stepnumber,uint8_t well);
 typedef struct{
 	char log[512];
 	uint8_t line_nums;
@@ -197,70 +198,43 @@ void Dwin_reset(void)
 	uint16_t Buf[2] = {0x55AA,0x5AA5};
 	Dwin_Write_VP(0X0004,Buf,2);
 }
-
-int dw_update_setup_page(uint8_t pg,uint8_t stepnumber){
-	if((pg > NUM_MAX_WELL ) || (stepnumber >24)){
+int dw_get_well_number(uint8_t index_pg,uint8_t index_stepnumber)
+{
+	if((index_pg >= MAX_PROGRAM_NUM ) || (index_stepnumber >=MAX_STEP_NUM)){
+				return 0;
+	}
+	return system_data.flash_data.Program_para[index_pg][index_stepnumber].wells;
+}
+int dw_update_setup_page(uint8_t pg,uint8_t index_stepnumber){
+	if((pg >= MAX_PROGRAM_NUM ) || (index_stepnumber >=MAX_STEP_NUM)){
 			return -1;
 	}
-	uint16_t data[12];
+	uint16_t data[13];
 
 	data[0] = pg+1;
-	data[1] = stepnumber+1;
-	data[2] = dt_calculator_step_type(system_data.flash_data.Program_para[pg][stepnumber].wells);
-	data[3] = system_data.flash_data.Program_para[pg][stepnumber].wells;
+	data[1] = index_stepnumber+1;
+	data[2] = dt_calculator_step_type(system_data.flash_data.Program_para[pg][index_stepnumber].wells); //not use
+	data[3] = dw_get_well_number(pg,index_stepnumber);
 	if((data[3] > NUM_MAX_WELL) )
 		data[3] = 1;
 	for(int i=4;i<11;i++)
 	{
-		data[i] = system_data.flash_data.Program_para[pg][stepnumber].timing[i-4];
+		data[i] = system_data.flash_data.Program_para[pg][index_stepnumber].timing[i-4];
 	}
-	Dwin_Write_VP(VP_SETUP_PARA,data,11);
+	data[11] = dw_get_well_number(pg,index_stepnumber+1);
+	Dwin_Write_VP(VP_SETUP_PARA,data,12);
 	return 1;
 }
 
 void show_user_page(){
 	Dwin_switch_page(PAGE_SETUP_USER_CTL);
 }
-void show_setup_page(uint8_t pg,uint8_t stepnumber){
-	if((pg > NUM_MAX_WELL ) || (stepnumber >24)){
+void show_setup_page(uint8_t pg,uint8_t index_stepnumber){
+	if((pg >= MAX_PROGRAM_NUM ) || (index_stepnumber >=MAX_STEP_NUM)){
 		return;
 	}
-	switch(dt_calculator_step_type(system_data.flash_data.Program_para[pg][stepnumber].wells)){
-		case (STEP_TYPE_WASHING):
-				Dwin_switch_page(PAGE_SETUP_STEP_WASHING);
-				if(system_data.flash_data.Program_para[pg][stepnumber].timing[1]) {
-					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
-					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
-				}
-				else {
-					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
-					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
-				}
-				if(system_data.flash_data.Program_para[pg][stepnumber].timing[5]) {
-					dwin_change_color_sp(0x7020,DWIN_COLOR_BLACK);
-					dwin_change_color_sp(0x7030,DWIN_COLOR_RED);
-				}
-				else {
-					dwin_change_color_sp(0x7020,DWIN_COLOR_RED);
-					dwin_change_color_sp(0x7030,DWIN_COLOR_BLACK);
-				}
-				break;
-		case (STEP_TYPE_DRYING):
-				Dwin_switch_page(PAGE_SETUP_STEP_DRYING);
-				if(system_data.flash_data.Program_para[pg][stepnumber].timing[0]) {
-					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
-					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
-				}
-				else {
-					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
-					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
-				}
-				break;
-		default:
-				Dwin_switch_page(PAGE_SETUP_STEP_SHAKE);
-			break;
-	}
-	dw_update_setup_page(pg,stepnumber);
+	Update_color(pg,index_stepnumber,system_data.flash_data.Program_para[pg][index_stepnumber].wells);
+	dw_update_setup_page(pg,index_stepnumber);
 }
 //                 2F  FF      2F FF   30  00
 //                                  8      10  11  12  13 14  15  16
@@ -294,6 +268,65 @@ void dwin_stop_program(void){
 
 
 }
+void Update_color(uint8_t pg,uint8_t index_stepnumber,uint8_t well)
+{
+	switch(dt_calculator_step_type(well)){
+		case (STEP_TYPE_WASHING):
+				Dwin_switch_page(PAGE_SETUP_STEP_WASHING);
+				if(system_data.flash_data.Program_para[pg][index_stepnumber].timing[1]) {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
+				}
+				if(system_data.flash_data.Program_para[pg][index_stepnumber].timing[5]) {
+					dwin_change_color_sp(0x7020,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7030,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7020,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7030,DWIN_COLOR_BLACK);
+				}
+				break;
+		case (STEP_TYPE_DRYING):
+				Dwin_switch_page(PAGE_SETUP_STEP_DRYING);
+				if(system_data.flash_data.Program_para[pg][index_stepnumber].timing[0]) {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_BLACK);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_RED);
+				}
+				else {
+					dwin_change_color_sp(0x7000,DWIN_COLOR_RED);
+					dwin_change_color_sp(0x7010,DWIN_COLOR_BLACK);
+				}
+				break;
+		default:
+				Dwin_switch_page(PAGE_SETUP_STEP_SHAKE);
+			break;
+	}
+}
+
+
+void dw_return_previous_page(void)
+{
+	uint16_t well_tmp=1;
+	switch (old_setup_page) {
+		case PAGE_SETUP_STEP_DRYING:
+			well_tmp = NUM_MAX_WELL;
+			break;
+		case PAGE_SETUP_STEP_WASHING:
+			well_tmp = NUM_MAX_WELL -1;
+			break;
+		default:
+			break;
+	}
+	Dwin_Write_VP(VP_WELLS_ADDR,&well_tmp,1);
+	Dwin_switch_page(old_setup_page);
+}
+static uint8_t current_pg_setup;
+static uint8_t current_step_setup;
+
 void dwin_change_target_well(uint8_t well){
 	if(well> NUM_MAX_WELL || well == 0 )
 	{
@@ -316,27 +349,10 @@ void dwin_change_target_well(uint8_t well){
 			target_page = PAGE_SETUP_STEP_SHAKE;
 			break;
 	}
+	Update_color(current_pg_setup-1,current_step_setup -1,well);
 	Dwin_switch_page(target_page);
 }
 
-void dw_return_previous_page(void)
-{
-	uint16_t well_tmp=1;
-	switch (old_setup_page) {
-		case PAGE_SETUP_STEP_DRYING:
-			well_tmp = NUM_MAX_WELL;
-			break;
-		case PAGE_SETUP_STEP_WASHING:
-			well_tmp = NUM_MAX_WELL -1;
-			break;
-		default:
-			break;
-	}
-	Dwin_Write_VP(VP_WELLS_ADDR,&well_tmp,1);
-	Dwin_switch_page(old_setup_page);
-}
-static uint8_t current_pg_setup;
-static uint8_t current_step_setup;
 int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 
 	if(size < 5){
@@ -353,6 +369,10 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 				current_pg_setup=value = data[8];
 				current_step_setup =1;
 				show_setup_page(value-1,0);
+			break;
+		case BT_SWICH_SETUP_PAGE:
+				current_step_setup = value = data[8];
+				show_setup_page(current_pg_setup-1,value-1);
 			break;
 		case BT_SETUP_TAR_GET_WELLS:
 				value = (uint16_t)data[7]*256+data[8];
@@ -381,10 +401,6 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 					dwin_change_color_sp(0x7030,DWIN_COLOR_BLACK);
 				}
 				break;
-		case BT_SWICH_SETUP_PAGE:
-				current_step_setup = value = data[8];
-				show_setup_page(current_pg_setup-1,value-1);
-			break;
 		case BT_SWICH_SETUP_EXIT:
 				current_pg_setup =0;
 			break;
@@ -439,7 +455,6 @@ int dw_process_rx_buffer(uint8_t *data,uint16_t size){ //USART_CR2_TOEN
 
 float xxxx;
 int dw_update_steper_positon(void){
-	return 1;
 	static uint32_t time_tmp =0;
 	if( (HAL_GetTick() > time_tmp)&&((x_motor.old_pos != x_motor.current_pos) || (z_motor.old_pos != z_motor.current_pos)))
 	{
@@ -447,14 +462,10 @@ int dw_update_steper_positon(void){
 		x_motor.old_pos = x_motor.current_pos;
 		z_motor.old_pos = z_motor.current_pos;
 		uint16_t data[4];
-		float tmp = (float)x_motor.current_pos/PULSES_PER_MM;
-		uint16_t *p = (uint16_t *)&tmp;
-		data[0] = p[1];
-		data[1] = p[0];
-		tmp = (float)z_motor.current_pos/PULSES_PER_MM;
-		xxxx= tmp;
-		data[2] = p[1];
-		data[3] = p[0];
+		data[0] = x_motor.current_pos/65535;
+		data[1] = x_motor.current_pos;
+		data[2] = z_motor.current_pos/65535;
+		data[3] = z_motor.current_pos;
 		Dwin_Write_VP(VP_X_STEP_MOTOR,data,4);
 		return 1;
 	}
