@@ -14,7 +14,6 @@
 
 
 typedef struct{
-	uint8_t type;
 	uint8_t wells;
 	uint16_t timing[7];
 }_def_step;
@@ -77,6 +76,7 @@ void dt_Modify_step(uint8_t pg,uint8_t stepindex ,_def_step step);
 int dt_get_well_num(uint8_t pg,uint8_t stepindex);
 int dt_set_well_num(uint8_t pg,uint8_t stepindex,int wellnum);
 void dt_calculator_pg_stepnumber(void);
+_step_type dt_calculator_step_type(uint8_t wells);
 HAL_StatusTypeDef dt_store_system_data(void);
 
 #endif /* INC_DATA_H_ */

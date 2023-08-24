@@ -159,7 +159,7 @@ void Dwin_switch_page(int page_index)
 void Dwin_switch_running_page(uint8_t pg,uint8_t stepnumber)
 {
 	dw_update_setup_page(pg,stepnumber);
-	switch (system_data.flash_data.Program_para[pg][stepnumber].type) {
+	switch (dt_calculator_step_type(system_data.flash_data.Program_para[pg][stepnumber].wells)) {
 		case STEP_TYPE_SHAKE:
 			Dwin_switch_page(PAGE_RUNNING_STEP_SHAKE);
 			LOGI(LOG_TAG,"SWITCH TO PAGE_RUNNING_STEP_SHAKE");
@@ -203,7 +203,7 @@ int dw_update_setup_page(uint8_t pg,uint8_t stepnumber){
 
 	data[0] = pg+1;
 	data[1] = stepnumber+1;
-	data[2] = system_data.flash_data.Program_para[pg][stepnumber].type;
+	data[2] = dt_calculator_step_type(system_data.flash_data.Program_para[pg][stepnumber].wells);
 	data[3] = system_data.flash_data.Program_para[pg][stepnumber].wells;
 	if((data[3] > NUM_MAX_WELL) )
 		data[3] = 1;
@@ -222,7 +222,7 @@ void show_setup_page(uint8_t pg,uint8_t stepnumber){
 	if((pg > NUM_MAX_WELL ) || (stepnumber >24)){
 		return;
 	}
-	switch(system_data.flash_data.Program_para[pg][stepnumber].type){
+	switch(dt_calculator_step_type(system_data.flash_data.Program_para[pg][stepnumber].wells)){
 		case (STEP_TYPE_WASHING):
 				Dwin_switch_page(PAGE_SETUP_STEP_WASHING);
 				if(system_data.flash_data.Program_para[pg][stepnumber].timing[1]) {
@@ -267,19 +267,6 @@ void dwin_update_step(uint8_t *data){
 	uint8_t pg = data[8]; // 0x3000
 	uint8_t stepindex = data[10]; // 0x3001
 	step.wells =data[14];
-	if(step.wells> NUM_MAX_WELL)
-			return;
-	switch (step.wells) {
-		case (NUM_MAX_WELL-1):
-			step.type = STEP_TYPE_WASHING;
-			break;
-		case NUM_MAX_WELL:
-			step.type = STEP_TYPE_DRYING;
-			break;
-		default:
-			step.type = STEP_TYPE_SHAKE;
-			break;
-	}
 	for(int i=0;i<7;i++){
 		step.timing[i] = (uint16_t)data[15+i*2]*256 + data[16+i*2];
 	}

@@ -19,30 +19,30 @@ const _flash_data flash_defaul = {
 											.Well_position ={100,1000,2000,3000,4000,5000}, // you not set position for wells10
 											.Program_para ={
 														{ //program 2
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 2,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 3,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 4,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 6,.timing = {1,15,1}}, //step6
+																{.wells = 1,.timing = {2,2,5,5,8}}, //step1
+																{.wells = 2,.timing = {5,8,1,6,7}}, //step2
+																{.wells = 3,.timing = {5,9,6,5,7}}, //step3
+																{.wells = 4,.timing = {5,3,7,1,8}}, //step4
+																{.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
+																{.wells = 6,.timing = {1,15,1}}, //step6
 
 														},
 														{ //program 2
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 2,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 3,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 4,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 6,.timing = {1,15,1}}, //step6
+																{.wells = 1,.timing = {2,2,5,5,8}}, //step1
+																{.wells = 2,.timing = {5,8,1,6,7}}, //step2
+																{.wells = 3,.timing = {5,9,6,5,7}}, //step3
+																{.wells = 4,.timing = {5,3,7,1,8}}, //step4
+																{.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
+																{.wells = 6,.timing = {1,15,1}}, //step6
 
 														},
 														{ //program 3
-																{.type = 1,.wells = 1,.timing = {2,2,5,5,8}}, //step1
-																{.type = 1,.wells = 2,.timing = {5,8,1,6,7}}, //step2
-																{.type = 1,.wells = 3,.timing = {5,9,6,5,7}}, //step3
-																{.type = 1,.wells = 4,.timing = {5,3,7,1,8}}, //step4
-																{.type = 2,.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
-																{.type = 3,.wells = 6,.timing = {1,15,1}}, //step6
+																{.wells = 1,.timing = {2,2,5,5,8}}, //step1
+																{.wells = 2,.timing = {5,8,1,6,7}}, //step2
+																{.wells = 3,.timing = {5,9,6,5,7}}, //step3
+																{.wells = 4,.timing = {5,3,7,1,8}}, //step4
+																{.wells = 5,.timing = {5,1,5,6,7,1,8}}, //step5
+																{.wells = 6,.timing = {1,15,1}}, //step6
 
 														},
 
@@ -63,13 +63,30 @@ int is_data_init()
 	return 1;
 }
 
+_step_type dt_calculator_step_type(uint8_t wells)
+{
+	if((wells == 0) || (wells >NUM_MAX_WELL))
+		return STEP_TYPE_NONE;
+	switch (wells) {
+		case NUM_MAX_WELL:
+			return STEP_TYPE_DRYING;
+			break;
+		case (NUM_MAX_WELL-1):
+			return STEP_TYPE_WASHING;
+			break;
+		default:
+			return STEP_TYPE_SHAKE;
+			break;
+	}
+	return STEP_TYPE_NONE;
+}
 void dt_calculator_pg_stepnumber(void){
 	for(int i=0;i<10;i++)
 	{
 		system_data.pg_stepnumber[i] =0;
 		for(int j=0;j<25;j++)
 		{
-			if(system_data.flash_data.Program_para[i][j].type == STEP_TYPE_NONE )
+			if(dt_calculator_step_type(system_data.flash_data.Program_para[i][j].wells) == STEP_TYPE_NONE )
 			{
 				break;
 			}

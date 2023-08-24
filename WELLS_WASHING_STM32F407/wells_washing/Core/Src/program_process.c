@@ -50,7 +50,7 @@ int pg_stop(void)
 }
 _step_type start_step(){
 //	Dwin_switch_running_page(running_pg,running_step);
-	switch (system_data.flash_data.Program_para[running_pg][running_step].type) {
+	switch (dt_calculator_step_type(system_data.flash_data.Program_para[running_pg][running_step].wells)) {
 		case STEP_TYPE_NONE:
 			LOGW(LOG_TAG,"step :%d  isn't active",running_step);
 			break;
@@ -89,7 +89,7 @@ _step_type start_step(){
 			// Code to handle unknown step type
 			break;
 	}
-	return system_data.flash_data.Program_para[running_pg][running_step].type;
+	return dt_calculator_step_type(system_data.flash_data.Program_para[running_pg][running_step].wells);
 }
 
 void pg_process_loop(void) {
@@ -128,7 +128,7 @@ void pg_process_loop(void) {
 				break;
 
 		case PG_STATE_RUNNING:
-			switch (system_data.flash_data.Program_para[running_pg][running_step].type) {
+			switch (dt_calculator_step_type(system_data.flash_data.Program_para[running_pg][running_step].wells)) {
 				case STEP_TYPE_SHAKE:
 					if(step_shake_process())
 					{
