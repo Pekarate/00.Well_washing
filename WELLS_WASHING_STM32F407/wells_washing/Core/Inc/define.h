@@ -8,7 +8,7 @@
 #ifndef INC_DEFINE_H_
 #define INC_DEFINE_H_
 
-#define SIMULATOR_MOD 0
+#define SIMULATOR_MOD 1
 #define HMI_START_PAGE 0
 
 #define NUM_MAX_WELL		 		6
