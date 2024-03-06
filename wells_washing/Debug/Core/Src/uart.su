@@ -1,0 +1,8 @@
+../Core/Src/uart.c:26:6:HAL_UART_TxCpltCallback	16	static
+../Core/Src/uart.c:39:6:uart_transmit	16	static
+../Core/Src/uart.c:58:6:uart_dma_start	8	static
+../Core/Src/uart.c:63:6:uart_dma_stop	8	static
+../Core/Src/uart.c:67:12:dw_process_rx_buffer	16	static
+../Core/Src/uart.c:71:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/uart.c:75:6:uart_process	8	static
+../Core/Src/uart.c:93:19:uart_transmit_block	16	static

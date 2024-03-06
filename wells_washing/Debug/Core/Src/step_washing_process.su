@@ -1,0 +1,11 @@
+../Core/Src/step_washing_process.c:32:6:set_timeout_for_fill_drain	16	static
+../Core/Src/step_washing_process.c:36:6:start_fill_washing_solution	8	static
+../Core/Src/step_washing_process.c:41:5:is_washing_solution_full	4	static
+../Core/Src/step_washing_process.c:58:6:stop_fill_washing_solution	8	static
+../Core/Src/step_washing_process.c:65:6:start_drain_washing_solution	8	static
+../Core/Src/step_washing_process.c:72:5:is_washing_solution_empty	4	static
+../Core/Src/step_washing_process.c:89:6:stop_drain_washing_solution	8	static
+../Core/Src/step_washing_process.c:94:5:step_washing_start	16	static
+../Core/Src/step_washing_process.c:104:5:step_washing_stop	8	static
+../Core/Src/step_washing_process.c:110:6:show_infor_washing_step	32	static
+../Core/Src/step_washing_process.c:124:5:step_washing_process	24	static

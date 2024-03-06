@@ -1,0 +1,4 @@
+../Core/Src/program_process.c:32:5:pg_start	2
+../Core/Src/program_process.c:46:5:pg_stop	1
+../Core/Src/program_process.c:51:12:start_step	8
+../Core/Src/program_process.c:95:6:pg_process_loop	20

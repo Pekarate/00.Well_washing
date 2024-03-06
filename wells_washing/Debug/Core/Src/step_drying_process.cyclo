@@ -1,0 +1,6 @@
+../Core/Src/step_drying_process.c:29:5:step_drying_start	2
+../Core/Src/step_drying_process.c:39:6:heater_on	1
+../Core/Src/step_drying_process.c:44:6:heater_off	1
+../Core/Src/step_drying_process.c:49:6:show_infor_drying_step	1
+../Core/Src/step_drying_process.c:59:5:step_drying_stop	1
+../Core/Src/step_drying_process.c:65:5:step_drying_process	16

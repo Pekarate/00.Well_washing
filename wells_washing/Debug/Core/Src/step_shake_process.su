@@ -1,0 +1,4 @@
+../Core/Src/step_shake_process.c:26:5:step_shake_start	4	static
+../Core/Src/step_shake_process.c:36:5:step_shake_stop	4	static
+../Core/Src/step_shake_process.c:43:6:show_infor_shake_step	32	static
+../Core/Src/step_shake_process.c:56:5:step_shake_process	16	static
